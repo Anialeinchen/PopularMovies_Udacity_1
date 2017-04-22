@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">PopularMovies_Udacity_1</string>
+    <string name="action_settings">settings</string>
+    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor convallis ex. Phasellus in velit at ipsum pharetra commodo</string>
+    <string name="error_message">error</string>
+    <string name="detail_activity_display_message">Movie Detail</string>
+    <string name="sort_by_popularity">sort by popularity</string>
+    <string name="sort_by_highest_rated">sort by highest rated</string>
 </resources>
