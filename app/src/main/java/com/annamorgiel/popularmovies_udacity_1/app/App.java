@@ -6,6 +6,7 @@ import com.annamorgiel.popularmovies_udacity_1.Rest.RestClient;
 
 /**
  * Created by Anna Morgiel on 23.04.2017.
+ * App is present for the whole life cycle, the client gets created
  */
 
 public class App extends Application {

@@ -10,7 +10,7 @@ import retrofit2.http.Query;
  */
 
 public interface MovieService {
-    
+
     //No Callback as third parameter because we use retrofit 2
     //we get the list of movies
 
