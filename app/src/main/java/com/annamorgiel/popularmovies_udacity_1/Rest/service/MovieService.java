@@ -1,6 +1,8 @@
 package com.annamorgiel.popularmovies_udacity_1.Rest.service;
 
-import retrofit2.Callback;
+import com.annamorgiel.popularmovies_udacity_1.Rest.model.ApiResponse;
+
+import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -24,6 +26,6 @@ public interface MovieService {
     Call<ApiResponse> getMovies(@Path("sortby") String sortby, @Query("api_key") String apiKey);
 
     @GET("/{id}/movie/top_rated")
-    Call<ApiResponse>  getMovieDetails(@Path("id") Integer id, @Query("api_key") String name);
+    Call<ApiResponse> getMovieDetails(@Path("id") Integer id, @Query("api_key") String name);
 
 }
