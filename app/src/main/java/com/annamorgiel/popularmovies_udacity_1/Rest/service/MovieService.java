@@ -25,7 +25,7 @@ public interface MovieService {
     @GET("/movie/{sortby}?api_key={apkiKey}")
     Call<ApiResponse> getMovies(@Path("sortby") String sortby, @Query("api_key") String apiKey);
 
-    @GET("/{id}/movie/top_rated")
-    Call<ApiResponse> getMovieDetails(@Path("id") Integer id, @Query("api_key") String name);
+    @GET("{id}")
+    Call<ApiResponse> getMovieDetails(@Path("id") Long id, @Query("api_key") String name);
 
 }
