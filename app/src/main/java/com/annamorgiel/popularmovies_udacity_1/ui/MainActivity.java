@@ -10,8 +10,8 @@ import android.view.MenuItem;
 
 import com.annamorgiel.popularmovies_udacity_1.MovieAdapter;
 import com.annamorgiel.popularmovies_udacity_1.R;
+import com.annamorgiel.popularmovies_udacity_1.Rest.RestClient;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
-import com.annamorgiel.popularmovies_udacity_1.app.App;
 
 import java.util.List;
 
@@ -29,11 +29,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
     private static final int NUM_GRID_ITEM = 100;
     private List<MovieObject> movieList;
     private MovieAdapter.GridItemClickListener listener;
+    private static RestClient mRestClient = new RestClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mRestClient.getMovieService();
 
         //find RecyclerView and set GridLayoutManager to handle ViewHolders in a grid
         poster_rv = (RecyclerView) findViewById(R.id.rv_movies);
@@ -80,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
     }
 
     private void fetchMovies(String sortby){
-        final Call movieListCall = App.getRestClient().getMovieService().getMovies(sortby, THE_MOVIE_DB_API_KEY);
+        final Call movieListCall = mRestClient.getMovieService().getMovies(sortby, THE_MOVIE_DB_API_KEY);
         movieListCall.enqueue(new Callback<List<MovieObject>>() {
             @Override
             public void onResponse(Call<List<MovieObject>> call, Response<List<MovieObject>> response) {

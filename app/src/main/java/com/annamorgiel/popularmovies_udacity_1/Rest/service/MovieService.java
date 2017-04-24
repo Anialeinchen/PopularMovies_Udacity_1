@@ -22,7 +22,7 @@ public interface MovieService {
      * @param apiKey is for dynamic parameters, queries the result with =? apiKey
      * @return
      */
-    @GET("/movie/{sortby}?api_key={apkiKey}")
+    @GET("/movie/{sortby}")
     Call<ApiResponse> getMovies(@Path("sortby") String sortby, @Query("api_key") String apiKey);
 
     @GET("{id}")
