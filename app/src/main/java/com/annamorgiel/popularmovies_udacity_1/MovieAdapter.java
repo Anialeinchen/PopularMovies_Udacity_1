@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,8 +20,8 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
     private static final String TAG = MovieAdapter.class.getSimpleName();
-
-    private List<MovieObject> movieList;
+    //todo
+    private List<MovieObject> movieList = new ArrayList<MovieObject>() {};
 
     final private GridItemClickListener mOnClickListener;
 
@@ -53,7 +54,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         String posterPath = movieList.get(position).getPosterPath();
         String url = "http://image.tmdb.org/t/p/w185/";
         //is it the right context?
-        Picasso.with(gridItemPosterView.getContext()).load(url + posterPath).into(gridItemPosterView);
+        Picasso.with(holder.posterImageView.getContext()).load(url + posterPath).into(gridItemPosterView);
     }
 
     @Override
