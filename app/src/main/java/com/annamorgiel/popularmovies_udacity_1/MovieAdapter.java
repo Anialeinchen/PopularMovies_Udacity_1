@@ -53,7 +53,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         gridItemPosterView = (ImageView) holder.posterImageView.findViewById(R.id.poster_iv);
         String posterPath = movieList.get(position).getPosterPath();
         String url = "http://image.tmdb.org/t/p/w185/";
-        //is it the right context?
         Picasso.with(holder.posterImageView.getContext()).load(url + posterPath).into(gridItemPosterView);
     }
 
