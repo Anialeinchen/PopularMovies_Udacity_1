@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import com.annamorgiel.popularmovies_udacity_1.MovieAdapter;
 import com.annamorgiel.popularmovies_udacity_1.R;
 import com.annamorgiel.popularmovies_udacity_1.Rest.RestClient;
+import com.annamorgiel.popularmovies_udacity_1.Rest.model.ApiResponse;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
 
 import java.util.List;
@@ -87,7 +88,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
             @Override
             public void onResponse(Call<List<MovieObject>> call, Response<List<MovieObject>> response) {
                 // get raw response
-                movieList = response.body();
+                ApiResponse movieResponse = (ApiResponse) response.body();
+                movieList = movieResponse.getMovieObjects();
+                //movieList = response.body();
                 adapter = new MovieAdapter(movieList, listener);
                 poster_rv.setAdapter(adapter);
             }
