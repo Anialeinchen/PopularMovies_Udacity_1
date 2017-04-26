@@ -2,6 +2,7 @@ package com.annamorgiel.popularmovies_udacity_1;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,13 +26,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     final private GridItemClickListener mOnClickListener;
 
-    public MovieAdapter(List<MovieObject> movieList, GridItemClickListener mOnClickListener) {
-        this.movieList = movieList;
+    //return null;?
+    public MovieAdapter(GridItemClickListener mOnClickListener) {
+        //this.movieList = movieList;
         this.mOnClickListener = mOnClickListener;
     }
 
     public void setMovieList(List<MovieObject> movies) {
         movieList = movies;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -41,7 +44,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmidiately = false;
 
-        View view = inflater.inflate(layoutIdForGridItem, parent, shouldAttachToParentImmidiately);
+        View view = inflater.inflate(layoutIdForGridItem, parent, false);
         MovieViewHolder holder = new MovieViewHolder(view);
 
         return holder;
@@ -50,10 +53,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
         ImageView gridItemPosterView;
-        gridItemPosterView = (ImageView) holder.posterImageView.findViewById(R.id.poster_iv);
+        //gridItemPosterView = (ImageView) holder.posterImageView.findViewById(R.id.poster_iv);
+        gridItemPosterView = holder.posterImageView;
         String posterPath = movieList.get(position).getPosterPath();
+        Log.d(TAG, "onBindViewHolder: posterpath " + posterPath);
+
         String url = "http://image.tmdb.org/t/p/w185/";
-        Picasso.with(holder.posterImageView.getContext()).load(url + posterPath).into(gridItemPosterView);
+        Picasso.with(holder.posterImageView.getContext())
+                .load(url + posterPath)
+                .into(gridItemPosterView);
     }
 
     @Override
@@ -75,7 +83,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         }
         @Override
         public void onClick(View view) {
-            int clickedPostition = getAdapterPosition();
+            int clickedPostition;
+            clickedPostition = getAdapterPosition();
             mOnClickListener.onGridItemClick(clickedPostition);
         }
     }

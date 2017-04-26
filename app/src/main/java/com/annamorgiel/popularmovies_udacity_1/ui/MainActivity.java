@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -23,6 +24,7 @@ import retrofit2.Response;
 import static com.annamorgiel.popularmovies_udacity_1.BuildConfig.THE_MOVIE_DB_API_KEY;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.GridItemClickListener{
+    private static final String TAG = "MainActivity";
 
     private RecyclerView poster_rv;
     private MovieAdapter adapter;
@@ -40,10 +42,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
 
         //find RecyclerView and set GridLayoutManager to handle ViewHolders in a grid
         poster_rv = (RecyclerView) findViewById(R.id.rv_movies);
-        GridLayoutManager layoutManager = new GridLayoutManager(this,NUM_GRID_ITEM);
+        GridLayoutManager layoutManager = new GridLayoutManager(this,2);
         poster_rv.setLayoutManager(layoutManager);
+        //poster_rv.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new MovieAdapter(listener);
+        poster_rv.setAdapter(adapter);
+        poster_rv.setHasFixedSize(true);
         fetchMovies(defaultSortBy);
-
     }
 
     @Override
@@ -91,8 +96,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
                 ApiResponse movieResponse = (ApiResponse) response.body();
                 movieList = movieResponse.getMovieObjects();
                 //movieList = response.body();
-                adapter = new MovieAdapter(movieList, listener);
-                poster_rv.setAdapter(adapter);
+                Log.d(TAG, "onResponse: size:" + movieList.size());
+
+                adapter.setMovieList(movieList);
             }
 
             @Override
