@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import com.annamorgiel.popularmovies_udacity_1.R;
 import com.annamorgiel.popularmovies_udacity_1.Rest.RestClient;
-import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
 import com.annamorgiel.popularmovies_udacity_1.app.App;
+import com.example.Example;
 import com.squareup.picasso.Picasso;
 
 import retrofit2.Call;
@@ -27,7 +27,7 @@ public class DetailActivity extends Activity {
     Long clickedItemId = null;
     Integer movieId = null;
     String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185/";
-    MovieObject movie;
+    Example movie;
     ImageView poster_detail;
     TextView title;
     TextView release_date;
@@ -35,13 +35,14 @@ public class DetailActivity extends Activity {
     TextView ranking;
     TextView desc;
     //TextView trailer = (TextView) findViewById(R.id.trailer1_tv);
-    private static RestClient mRestClient = new RestClient();
+    private static RestClient mRestClient;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        mRestClient = new RestClient();
         poster_detail = (ImageView) findViewById(R.id.detail_poster_iv);
         title = (TextView) this.findViewById(R.id.detail_movie_title);
         release_date = (TextView) findViewById(R.id.detail_release_date_tv);
@@ -57,11 +58,10 @@ public class DetailActivity extends Activity {
 
     private void fetchMovieDetails(Integer id){
         final Call movieDetailCall = App.getRestClient().getMovieService().getMovieDetails(id, THE_MOVIE_DB_API_KEY);
-        movieDetailCall.enqueue(new Callback<MovieObject>() {
+        movieDetailCall.enqueue(new Callback<Example>() {
             @Override
-            public void onResponse(Call<MovieObject> call, Response<MovieObject> response) {
+            public void onResponse(Call<Example> call, Response<Example> response) {
                 // get raw response
-
                 movie = response.body();
                 title.setText(movie.getTitle());
                 release_date.setText(movie.getReleaseDate());
@@ -73,7 +73,7 @@ public class DetailActivity extends Activity {
             }
 
             @Override
-            public void onFailure(Call<MovieObject> call, Throwable t) {}
+            public void onFailure(Call<Example> call, Throwable t) {}
         });
     }
 
