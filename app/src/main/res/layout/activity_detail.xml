@@ -26,11 +26,10 @@
         <ImageView
             android:id="@+id/detail_poster_iv"
             android:layout_weight="0.4"
-            android:background="@drawable/poster1"
             android:layout_width="0dp"
             android:paddingLeft="10dp"
             android:gravity="left"
-            android:layout_height="wrap_content" />
+            android:layout_height="100dp" />
 
         <View
             android:layout_weight="0.2"

@@ -6,4 +6,5 @@
     <string name="detail_activity_display_message">Movie Detail</string>
     <string name="sort_by_popularity">sort by popularity</string>
     <string name="sort_by_highest_rated">sort by highest rated</string>
+    <string name="detail_activity">DetailActivity</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.annamorgiel.popularmovies_udacity_1;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
+import com.annamorgiel.popularmovies_udacity_1.ui.DetailActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -21,16 +23,14 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
     private static final String TAG = MovieAdapter.class.getSimpleName();
-    //todo
+
     private List<MovieObject> movieList = new ArrayList<MovieObject>() {};
+    private View.OnClickListener mOnClickListener;
 
-    final private GridItemClickListener mOnClickListener;
-
-    //return null;?
-    public MovieAdapter(GridItemClickListener mOnClickListener) {
-        //this.movieList = movieList;
+    public MovieAdapter(View.OnClickListener mOnClickListener) {
         this.mOnClickListener = mOnClickListener;
     }
+
 
     public void setMovieList(List<MovieObject> movies) {
         movieList = movies;
@@ -42,18 +42,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         Context context = parent.getContext();
         int layoutIdForGridItem = R.layout.grid_item_view;
         LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmidiately = false;
 
         View view = inflater.inflate(layoutIdForGridItem, parent, false);
+        view.setOnClickListener(mOnClickListener);
         MovieViewHolder holder = new MovieViewHolder(view);
 
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(MovieViewHolder holder, int position) {
+    public void onBindViewHolder(final MovieViewHolder holder, int position) {
         ImageView gridItemPosterView;
-        //gridItemPosterView = (ImageView) holder.posterImageView.findViewById(R.id.poster_iv);
         gridItemPosterView = holder.posterImageView;
         String posterPath = movieList.get(position).getPosterPath();
         Log.d(TAG, "onBindViewHolder: posterpath " + posterPath);
@@ -69,9 +68,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return movieList.size();
     }
 
-    public interface GridItemClickListener {
-        void onGridItemClick(int clickedItemIndex);
-    }
 
     class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public final ImageView posterImageView;
@@ -81,11 +77,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             posterImageView = (ImageView) view.findViewById(R.id.poster_iv);
             view.setOnClickListener(this);
         }
-        @Override
         public void onClick(View view) {
-            int clickedPostition;
-            clickedPostition = getAdapterPosition();
-            mOnClickListener.onGridItemClick(clickedPostition);
+            Class destinationClass = DetailActivity.class;
+            Integer adapterPosition = getAdapterPosition();
+            Integer movieId = movieList.get(adapterPosition).getId();
+            Intent intentToStartDetailActivity = new Intent(view.getContext(), destinationClass);
+            intentToStartDetailActivity.putExtra("movieId",movieId);
+            view.getContext().startActivity(intentToStartDetailActivity);
         }
     }
 }

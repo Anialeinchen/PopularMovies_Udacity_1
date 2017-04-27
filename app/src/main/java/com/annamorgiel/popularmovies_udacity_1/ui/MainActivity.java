@@ -1,6 +1,5 @@
 package com.annamorgiel.popularmovies_udacity_1.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -8,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.annamorgiel.popularmovies_udacity_1.MovieAdapter;
 import com.annamorgiel.popularmovies_udacity_1.R;
@@ -23,15 +23,14 @@ import retrofit2.Response;
 
 import static com.annamorgiel.popularmovies_udacity_1.BuildConfig.THE_MOVIE_DB_API_KEY;
 
-public class MainActivity extends AppCompatActivity implements MovieAdapter.GridItemClickListener{
+public class MainActivity extends AppCompatActivity{
     private static final String TAG = "MainActivity";
 
-    private RecyclerView poster_rv;
     private MovieAdapter adapter;
     private String defaultSortBy = "popular";
     private static final int NUM_GRID_ITEM = 100;
     private List<MovieObject> movieList;
-    private MovieAdapter.GridItemClickListener listener;
+    private View.OnClickListener listener;
     private static RestClient mRestClient = new RestClient();
 
     @Override
@@ -41,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
         mRestClient.getMovieService();
 
         //find RecyclerView and set GridLayoutManager to handle ViewHolders in a grid
-        poster_rv = (RecyclerView) findViewById(R.id.rv_movies);
+        RecyclerView poster_rv = (RecyclerView) findViewById(R.id.rv_movies);
         GridLayoutManager layoutManager = new GridLayoutManager(this,2);
         poster_rv.setLayoutManager(layoutManager);
         //poster_rv.setLayoutManager(new LinearLayoutManager(this));
@@ -68,23 +67,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
         switch (id) {
             case R.id.sort_by_popularity:
                 fetchMovies(defaultSortBy);
+                adapter.notifyDataSetChanged();
                 return true;
 
             case R.id.sort_by_ranking:
                 fetchMovies(sortByTopRated);
+                adapter.notifyDataSetChanged();
                 return true;
 
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onGridItemClick(int clickedItemIndex) {
-        Class destinationClass = DetailActivity.class;
-        Long clickedItemId = adapter.getItemId(clickedItemIndex);
-        Intent intentToStartDetailActivity = new Intent(getApplicationContext(), destinationClass);
-        intentToStartDetailActivity.putExtra("movieId",clickedItemId);
-        startActivity(intentToStartDetailActivity);
     }
 
     private void fetchMovies(String sortby){
@@ -97,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
                 movieList = movieResponse.getMovieObjects();
                 //movieList = response.body();
                 Log.d(TAG, "onResponse: size:" + movieList.size());
-
                 adapter.setMovieList(movieList);
             }
 
