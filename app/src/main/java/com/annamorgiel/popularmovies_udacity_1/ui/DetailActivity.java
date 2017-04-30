@@ -49,7 +49,7 @@ public class DetailActivity extends Activity {
         desc = (TextView) findViewById(R.id.detail_movie_description);
         mRestClient.getMovieService();
         Intent intentThatStartedThisActivity = getIntent();
-        if (intentThatStartedThisActivity.hasExtra(Intent.EXTRA_TEXT)) {
+        if (intentThatStartedThisActivity.hasExtra("movieId")) {
             movieId = intentThatStartedThisActivity.getIntExtra("movieId", 22);
         }
         fetchMovieDetails(movieId);
