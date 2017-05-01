@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.annamorgiel.popularmovies_udacity_1.R;
 import com.annamorgiel.popularmovies_udacity_1.Rest.RestClient;
@@ -75,7 +76,8 @@ public class DetailActivity extends Activity {
 
             @Override
             public void onFailure(Call<MovieObject> call, Throwable t) {
-
+                Toast.makeText(getApplicationContext(), "Please check your internet connection, buddy!",
+                        Toast.LENGTH_LONG).show();
             }
         });
     }

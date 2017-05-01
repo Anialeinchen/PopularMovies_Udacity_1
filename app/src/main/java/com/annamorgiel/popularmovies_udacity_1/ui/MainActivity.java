@@ -1,5 +1,6 @@
 package com.annamorgiel.popularmovies_udacity_1.ui;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.annamorgiel.popularmovies_udacity_1.MovieAdapter;
 import com.annamorgiel.popularmovies_udacity_1.R;
@@ -42,9 +44,14 @@ public class MainActivity extends AppCompatActivity{
 
         //find RecyclerView and set GridLayoutManager to handle ViewHolders in a grid
         RecyclerView poster_rv = (RecyclerView) findViewById(R.id.rv_movies);
-        GridLayoutManager layoutManager = new GridLayoutManager(this,2);
-        poster_rv.setLayoutManager(layoutManager);
-        //poster_rv.setLayoutManager(new LinearLayoutManager(this));
+        if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            poster_rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+        }
+        else{
+            poster_rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
+        }
+        //GridLayoutManager layoutManager = new GridLayoutManager(this,2);
+        //poster_rv.setLayoutManager(layoutManager);
         adapter = new MovieAdapter(listener);
         poster_rv.setAdapter(adapter);
         poster_rv.setHasFixedSize(true);
@@ -93,7 +100,10 @@ public class MainActivity extends AppCompatActivity{
             }
 
             @Override
-            public void onFailure(Call<List<MovieObject>> call, Throwable t) {}
+            public void onFailure(Call<List<MovieObject>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Please check your internet connection, buddy!",
+                        Toast.LENGTH_LONG).show();
+            }
         });
     }
 }
