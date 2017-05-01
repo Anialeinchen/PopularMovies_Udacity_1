@@ -32,6 +32,9 @@ public class MovieObject {
     @SerializedName("id")
     @Expose
     private Integer id;
+    @SerializedName("runtime")
+    @Expose
+    private Integer runtime;
     @SerializedName("original_title")
     @Expose
     private String originalTitle;
@@ -120,6 +123,14 @@ public class MovieObject {
     public void setOriginalLanguage(String originalLanguage) {
         this.originalLanguage = originalLanguage;
     }
+    public Integer getRuntime() {
+        return runtime;
+    }
+
+    public void setRuntime(Integer runtime) {
+        this.runtime = runtime;
+    }
+
 
     public String getTitle() {
         return title;

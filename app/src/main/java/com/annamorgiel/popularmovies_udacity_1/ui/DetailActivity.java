@@ -31,7 +31,7 @@ public class DetailActivity extends Activity {
     ImageView poster_detail;
     TextView title;
     TextView release_date;
-    //TextView length = (TextView) findViewById(R.id.detail_movie_length_tv);
+    TextView length;
     TextView ranking;
     TextView desc;
     //TextView trailer = (TextView) findViewById(R.id.trailer1_tv);
@@ -47,6 +47,8 @@ public class DetailActivity extends Activity {
         release_date = (TextView) findViewById(R.id.detail_release_date_tv);
         ranking = (TextView) findViewById(R.id.rdetail_anking_tv);
         desc = (TextView) findViewById(R.id.detail_movie_description);
+        length = (TextView) findViewById(R.id.detail_movie_length_tv);
+
         mRestClient.getMovieService();
         Intent intentThatStartedThisActivity = getIntent();
         if (intentThatStartedThisActivity.hasExtra("movieId")) {
@@ -66,7 +68,8 @@ public class DetailActivity extends Activity {
                 title.setText(movie.getTitle());
                 release_date.setText(movie.getReleaseDate());
                 desc.setText(movie.getOverview());
-                ranking.setText(movie.getPopularity().toString());
+                length.setText(movie.getRuntime().toString()+" min");
+                ranking.setText(movie.getVoteAverage().toString());
                 Picasso.with(getApplicationContext())
                         .load(BASE_POSTER_URL + movie.getPosterPath())
                         .into(poster_detail);

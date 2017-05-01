@@ -71,6 +71,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public final ImageView posterImageView;
+        public static final String movieId = "movieId";
 
         public MovieViewHolder(View view){
             super(view);
@@ -80,11 +81,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         public void onClick(View view) {
             Class destinationClass = DetailActivity.class;
             Integer adapterPosition = getAdapterPosition();
-            Integer movieId = movieList.get(adapterPosition).getId();
+            Integer movieIdInt = movieList.get(adapterPosition).getId();
             Intent intentToStartDetailActivity = new Intent(view.getContext(), destinationClass);
-            //todo delete string literals -> public static final
-            //create util class
-            intentToStartDetailActivity.putExtra("movieId",movieId);
+            //done? delete string literals -> public static final
+            //create util class?
+            intentToStartDetailActivity.putExtra(movieId,movieIdInt);
             view.getContext().startActivity(intentToStartDetailActivity);
         }
     }

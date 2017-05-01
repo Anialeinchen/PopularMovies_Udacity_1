@@ -27,7 +27,8 @@ public class MainActivity extends AppCompatActivity{
     private static final String TAG = "MainActivity";
 
     private MovieAdapter adapter;
-    private String defaultSortBy = "popular";
+    private String sortByPopular = "popular";
+    private String sortByHighestRated = "top_rated";
     private static final int NUM_GRID_ITEM = 100;
     private List<MovieObject> movieList;
     private View.OnClickListener listener;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity{
         adapter = new MovieAdapter(listener);
         poster_rv.setAdapter(adapter);
         poster_rv.setHasFixedSize(true);
-        fetchMovies(defaultSortBy);
+        fetchMovies(sortByPopular);
     }
 
     @Override
@@ -59,19 +60,18 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        String sortByTopRated = "top_rated";
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         switch (id) {
             case R.id.sort_by_popularity:
-                fetchMovies(defaultSortBy);
+                fetchMovies(sortByPopular);
                 adapter.notifyDataSetChanged();
                 return true;
 
             case R.id.sort_by_ranking:
-                fetchMovies(sortByTopRated);
+                fetchMovies(sortByHighestRated);
                 adapter.notifyDataSetChanged();
                 return true;
 
