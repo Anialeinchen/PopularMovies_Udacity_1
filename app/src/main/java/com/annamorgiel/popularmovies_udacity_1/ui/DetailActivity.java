@@ -72,11 +72,15 @@ public class DetailActivity extends Activity {
                 ranking.setText(movie.getVoteAverage().toString());
                 Picasso.with(getApplicationContext())
                         .load(BASE_POSTER_URL + movie.getPosterPath())
+                        .placeholder(R.drawable.loading_poster)
+                        .error(R.drawable.ic_alert_circle)
                         .into(poster_detail);
             }
 
             @Override
-            public void onFailure(Call<MovieObject> call, Throwable t) {}
+            public void onFailure(Call<MovieObject> call, Throwable t) {
+
+            }
         });
     }
 

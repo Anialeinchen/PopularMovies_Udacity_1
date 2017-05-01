@@ -60,6 +60,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         String url = "http://image.tmdb.org/t/p/w185/";
         Picasso.with(holder.posterImageView.getContext())
                 .load(url + posterPath)
+                .placeholder(R.drawable.loading_poster)
+                .error(R.drawable.ic_alert_circle)
                 .into(gridItemPosterView);
     }
 
