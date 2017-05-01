@@ -12,6 +12,8 @@ import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
 import com.annamorgiel.popularmovies_udacity_1.app.App;
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,12 +30,12 @@ public class DetailActivity extends Activity {
     Integer movieId = null;
     String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185/";
     MovieObject movie;
-    ImageView poster_detail;
-    TextView title;
-    TextView release_date;
-    TextView length;
-    TextView ranking;
-    TextView desc;
+    @BindView(R.id.detail_poster_iv) ImageView poster_detail;
+    @BindView(R.id.detail_movie_title) TextView title;
+    @BindView(R.id.detail_release_date_tv) TextView release_date;
+    @BindView(R.id.detail_movie_length_tv) TextView length;
+    @BindView(R.id.rdetail_anking_tv) TextView ranking;
+    @BindView(R.id.detail_movie_description) TextView desc;
     //TextView trailer = (TextView) findViewById(R.id.trailer1_tv);
     private static RestClient mRestClient = new RestClient();
 
@@ -42,13 +44,7 @@ public class DetailActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        poster_detail = (ImageView) findViewById(R.id.detail_poster_iv);
-        title = (TextView) this.findViewById(R.id.detail_movie_title);
-        release_date = (TextView) findViewById(R.id.detail_release_date_tv);
-        ranking = (TextView) findViewById(R.id.rdetail_anking_tv);
-        desc = (TextView) findViewById(R.id.detail_movie_description);
-        length = (TextView) findViewById(R.id.detail_movie_length_tv);
-
+        ButterKnife.bind(this);
         mRestClient.getMovieService();
         Intent intentThatStartedThisActivity = getIntent();
         if (intentThatStartedThisActivity.hasExtra("movieId")) {
