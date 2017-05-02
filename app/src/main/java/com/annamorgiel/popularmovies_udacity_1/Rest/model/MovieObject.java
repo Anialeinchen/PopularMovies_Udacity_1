@@ -1,56 +1,64 @@
 package com.annamorgiel.popularmovies_udacity_1.Rest.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import org.parceler.Parcel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-    /**
-     * Created by Anna Morgiel on 02.05.2017.
-     */
-
+/**
+ * Created by Anna Morgiel on 23.04.2017.
+ */
 @Parcel
 public class MovieObject {
 
-        String posterPath;
-        Boolean adult;
-        String overview;
-        String releaseDate;
-        List<Integer> genreIds =  new ArrayList<Integer>();
-        Integer id;
-        Integer runtime;
-        String originalTitle;
-        String originalLanguage;
-        String title;
-        String backdropPath;
-        Double popularity;
-        Integer voteCount;
-        Double voteAverage;
-        Boolean video;
-
-        public MovieObject(){
-        }
-
-        public MovieObject(String posterPath, Boolean adult, String overview, String releaseDate, List<Integer> genreIds,
-                           Integer id, Integer runtime, String originalTitle, String originalLanguage, String title,
-                           String backdropPath, Double popularity, Integer voteCount, Double voteAverage, Boolean video){
-            this.posterPath = posterPath;
-            this.adult = adult;
-            this.overview = overview;
-            this.releaseDate = releaseDate;
-            this.genreIds = genreIds;
-            this.id = id;
-            this.runtime = runtime;
-            this.originalTitle = originalTitle;
-            this.originalLanguage = originalLanguage;
-            this.title = title;
-            this.backdropPath = backdropPath;
-            this.popularity = popularity;
-            this.voteCount = voteCount;
-            this.voteAverage = voteAverage;
-            this.video = video;
-
-        }
+    @SerializedName("poster_path")
+    @Expose
+    private String posterPath;
+    @SerializedName("adult")
+    @Expose
+    private Boolean adult;
+    @SerializedName("overview")
+    @Expose
+    private String overview;
+    @SerializedName("release_date")
+    @Expose
+    private String releaseDate;
+    @SerializedName("genre_ids")
+    @Expose
+    private List<Integer> genreIds =  new ArrayList<Integer>();
+    @SerializedName("id")
+    @Expose
+    private Integer id;
+    @SerializedName("runtime")
+    @Expose
+    private Integer runtime;
+    @SerializedName("original_title")
+    @Expose
+    private String originalTitle;
+    @SerializedName("original_language")
+    @Expose
+    private String originalLanguage;
+    @SerializedName("title")
+    @Expose
+    private String title;
+    @SerializedName("backdrop_path")
+    @Expose
+    private String backdropPath;
+    @SerializedName("popularity")
+    @Expose
+    private Double popularity;
+    @SerializedName("vote_count")
+    @Expose
+    private Integer voteCount;
+    @SerializedName("video")
+    @Expose
+    private Boolean video;
+    @SerializedName("vote_average")
+    @Expose
+    private Double voteAverage;
 
     public String getPosterPath() {
         return posterPath;
@@ -172,3 +180,4 @@ public class MovieObject {
         this.voteAverage = voteAverage;
     }
 }
+
