@@ -16,49 +16,49 @@ public class MovieObject {
 
     @SerializedName("poster_path")
     @Expose
-    private String posterPath;
+    public String posterPath;
     @SerializedName("adult")
     @Expose
-    private Boolean adult;
+    public Boolean adult;
     @SerializedName("overview")
     @Expose
-    private String overview;
+    public String overview;
     @SerializedName("release_date")
     @Expose
-    private String releaseDate;
+    public String releaseDate;
     @SerializedName("genre_ids")
     @Expose
-    private List<Integer> genreIds =  new ArrayList<Integer>();
+    public List<Integer> genreIds =  new ArrayList<Integer>();
     @SerializedName("id")
     @Expose
-    private Integer id;
+    public Integer id;
     @SerializedName("runtime")
     @Expose
-    private Integer runtime;
+    public Integer runtime;
     @SerializedName("original_title")
     @Expose
-    private String originalTitle;
+    public String originalTitle;
     @SerializedName("original_language")
     @Expose
-    private String originalLanguage;
+    public String originalLanguage;
     @SerializedName("title")
     @Expose
-    private String title;
+    public String title;
     @SerializedName("backdrop_path")
     @Expose
-    private String backdropPath;
+    public String backdropPath;
     @SerializedName("popularity")
     @Expose
-    private Double popularity;
+    public Double popularity;
     @SerializedName("vote_count")
     @Expose
-    private Integer voteCount;
+    public Integer voteCount;
     @SerializedName("video")
     @Expose
-    private Boolean video;
+    public Boolean video;
     @SerializedName("vote_average")
     @Expose
-    private Double voteAverage;
+    public Double voteAverage;
 
     public MovieObject() {
     }

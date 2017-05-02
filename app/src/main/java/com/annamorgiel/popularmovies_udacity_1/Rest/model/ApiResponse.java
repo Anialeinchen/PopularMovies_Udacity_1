@@ -14,16 +14,16 @@ public class ApiResponse {
     //giuhi
     @SerializedName("page")
     @Expose
-    private Integer page;
+    public Integer page;
     @SerializedName("results")
     @Expose
-    private List<MovieObject> movies =  new ArrayList<MovieObject>();
+    public List<MovieObject> movies =  new ArrayList<MovieObject>();
     @SerializedName("total_results")
     @Expose
-    private Integer totalMovieObjects;
+    public Integer totalMovieObjects;
     @SerializedName("total_pages")
     @Expose
-    private Integer totalPages;
+    public Integer totalPages;
 
     public ApiResponse() {
     }
