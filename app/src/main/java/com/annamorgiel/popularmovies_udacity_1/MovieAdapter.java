@@ -13,6 +13,8 @@ import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
 import com.annamorgiel.popularmovies_udacity_1.ui.DetailActivity;
 import com.squareup.picasso.Picasso;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,11 +85,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         public void onClick(View view) {
             Class destinationClass = DetailActivity.class;
             Integer adapterPosition = getAdapterPosition();
-            Integer movieIdInt = movieList.get(adapterPosition).getId();
+            //Integer movieIdInt = movieList.get(adapterPosition).getId();
+            MovieObject movie = movieList.get(adapterPosition);
             Intent intentToStartDetailActivity = new Intent(view.getContext(), destinationClass);
-            //done? delete string literals -> public static final
-            //create util class?
-            intentToStartDetailActivity.putExtra(movieId,movieIdInt);
+
+            //intentToStartDetailActivity.putExtra(movieId,movieIdInt);
+            intentToStartDetailActivity.putExtra("chosen_movie", Parcels.wrap(movie));
             view.getContext().startActivity(intentToStartDetailActivity);
         }
     }
