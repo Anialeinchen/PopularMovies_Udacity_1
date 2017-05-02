@@ -1,9 +1,7 @@
 package com.annamorgiel.popularmovies_udacity_1.Rest.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import org.parceler.Parcel;
+import org.parceler.ParcelProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,51 +12,73 @@ import java.util.List;
 @Parcel
 public class MovieObject {
 
-    @SerializedName("poster_path")
-    @Expose
-    private String posterPath;
-    @SerializedName("adult")
-    @Expose
-    private Boolean adult;
-    @SerializedName("overview")
-    @Expose
-    private String overview;
-    @SerializedName("release_date")
-    @Expose
-    private String releaseDate;
-    @SerializedName("genre_ids")
-    @Expose
-    private List<Integer> genreIds =  new ArrayList<Integer>();
-    @SerializedName("id")
-    @Expose
-    private Integer id;
-    @SerializedName("runtime")
-    @Expose
-    private Integer runtime;
-    @SerializedName("original_title")
-    @Expose
-    private String originalTitle;
-    @SerializedName("original_language")
-    @Expose
-    private String originalLanguage;
-    @SerializedName("title")
-    @Expose
-    private String title;
-    @SerializedName("backdrop_path")
-    @Expose
-    private String backdropPath;
-    @SerializedName("popularity")
-    @Expose
-    private Double popularity;
-    @SerializedName("vote_count")
-    @Expose
-    private Integer voteCount;
-    @SerializedName("video")
-    @Expose
-    private Boolean video;
-    @SerializedName("vote_average")
-    @Expose
-    private Double voteAverage;
+    @ParcelProperty("poster_path")
+     String posterPath;
+    
+    @ParcelProperty("adult")
+     Boolean adult;
+    
+    @ParcelProperty("overview")
+     String overview;
+    
+    @ParcelProperty("release_date")
+     String releaseDate;
+    
+    @ParcelProperty("genre_ids")
+     List<Integer> genreIds =  new ArrayList<Integer>();
+    
+    @ParcelProperty("id")
+     Integer id;
+    
+    @ParcelProperty("runtime")
+     Integer runtime;
+    
+    @ParcelProperty("original_title")
+     String originalTitle;
+    
+    @ParcelProperty("original_language")
+     String originalLanguage;
+    
+    @ParcelProperty("title")
+     String title;
+    
+    @ParcelProperty("backdrop_path")
+     String backdropPath;
+    
+    @ParcelProperty("popularity")
+     Double popularity;
+    
+    @ParcelProperty("vote_count")
+     Integer voteCount;
+    
+    @ParcelProperty("video")
+     Boolean video;
+    
+    @ParcelProperty("vote_average")
+     Double voteAverage;
+    
+    public MovieObject(){}
+
+    public MovieObject(String posterPath, Boolean adult, String overview, String releaseDate, List<Integer> genreIds,
+                        Integer id, Integer runtime, String originalTitle, String originalLanguage, String title,
+                        String backdropPath, Double popularity, Integer voteCount, Double voteAvarege; Boolean video){
+        this.posterPath = posterPath;
+        this.adult = adult;
+        this.overview = overview;
+        this.releaseDate = releaseDate;
+        this.genreIds = genreIds;
+        this.id = id;
+        this.runtime = runtime;
+        this.originalTitle = originalTitle;
+        this.originalLanguage = originalLanguage;
+        this.title = title;
+        this.backdropPath = backdropPath;
+        this.popularity = popularity;
+        this.voteCount = voteCount;
+        this.voteAverage = voteAvarege;
+        this.video = video;
+
+    }
 
     public String getPosterPath() {
         return posterPath;
