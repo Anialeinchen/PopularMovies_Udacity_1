@@ -1,9 +1,7 @@
 package com.annamorgiel.popularmovies_udacity_1.Rest.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import org.parceler.Parcel;
+import org.parceler.ParcelProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,19 +9,27 @@ import java.util.List;
 @Parcel
 public class ApiResponse {
     //changed total_movies to total results and also movies to results
-    //giuhi
-    @SerializedName("page")
-    @Expose
-    private Integer page;
-    @SerializedName("results")
-    @Expose
-    private List<MovieObject> movies = new ArrayList<MovieObject>();
-    @SerializedName("total_results")
-    @Expose
-    private Integer totalMovieObjects;
-    @SerializedName("total_pages")
-    @Expose
-    private Integer totalPages;
+    @ParcelProperty("page")
+    public Integer page;
+
+    @ParcelProperty("results")
+    public List<MovieObject> movies = new ArrayList<MovieObject>();
+
+    @ParcelProperty("total_results")
+    public Integer totalMovieObjects;
+
+    @ParcelProperty("total_pages")
+    public Integer totalPages;
+
+    public ApiResponse() {
+    }
+
+    public ApiResponse(Integer page, List<MovieObject> movies, Integer totalMovieObjects, Integer totalPages) {
+        this.page = page;
+        this.movies = movies;
+        this.totalMovieObjects = totalMovieObjects;
+        this.totalPages = totalPages;
+    }
 
     public Integer getPage() {
         return page;
