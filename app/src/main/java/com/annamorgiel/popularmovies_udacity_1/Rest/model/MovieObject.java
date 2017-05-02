@@ -61,7 +61,7 @@ public class MovieObject {
 
     public MovieObject(String posterPath, Boolean adult, String overview, String releaseDate, List<Integer> genreIds,
                         Integer id, Integer runtime, String originalTitle, String originalLanguage, String title,
-                        String backdropPath, Double popularity, Integer voteCount, Double voteAvarege; Boolean video){
+                        String backdropPath, Double popularity, Integer voteCount, Double voteAvarege, Boolean video){
         this.posterPath = posterPath;
         this.adult = adult;
         this.overview = overview;
