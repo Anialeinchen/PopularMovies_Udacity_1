@@ -25,6 +25,16 @@ public class ApiResponse {
     @Expose
     private Integer totalPages;
 
+    public ApiResponse() {
+    }
+
+    public ApiResponse(Integer page, List<MovieObject> movies, Integer totalMovieObjects, Integer totalPages) {
+        this.page = page;
+        this.movies = movies;
+        this.totalMovieObjects = totalMovieObjects;
+        this.totalPages = totalPages;
+    }
+
     public Integer getPage() {
         return page;
     }
