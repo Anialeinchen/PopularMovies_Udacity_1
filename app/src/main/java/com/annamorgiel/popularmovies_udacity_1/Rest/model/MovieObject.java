@@ -13,55 +13,56 @@ import java.util.List;
 public class MovieObject {
 
     @ParcelProperty("poster_path")
-     String posterPath;
-    
+    String posterPath;
+
     @ParcelProperty("adult")
-     Boolean adult;
-    
+    Boolean adult;
+
     @ParcelProperty("overview")
-     String overview;
-    
+    String overview;
+
     @ParcelProperty("release_date")
-     String releaseDate;
-    
+    String releaseDate;
+
     @ParcelProperty("genre_ids")
-     List<Integer> genreIds =  new ArrayList<Integer>();
-    
+    List<Integer> genreIds = new ArrayList<Integer>();
+
     @ParcelProperty("id")
-     Integer id;
-    
+    Integer id;
+
     @ParcelProperty("runtime")
-     Integer runtime;
-    
+    Integer runtime;
+
     @ParcelProperty("original_title")
-     String originalTitle;
-    
+    String originalTitle;
+
     @ParcelProperty("original_language")
-     String originalLanguage;
-    
+    String originalLanguage;
+
     @ParcelProperty("title")
-     String title;
-    
+    String title;
+
     @ParcelProperty("backdrop_path")
-     String backdropPath;
-    
+    String backdropPath;
+
     @ParcelProperty("popularity")
-     Double popularity;
-    
+    Double popularity;
+
     @ParcelProperty("vote_count")
-     Integer voteCount;
-    
+    Integer voteCount;
+
     @ParcelProperty("video")
-     Boolean video;
-    
+    Boolean video;
+
     @ParcelProperty("vote_average")
-     Double voteAverage;
-    
-    public MovieObject(){}
+    Double voteAverage;
+
+    public MovieObject() {
+    }
 
     public MovieObject(String posterPath, Boolean adult, String overview, String releaseDate, List<Integer> genreIds,
-                        Integer id, Integer runtime, String originalTitle, String originalLanguage, String title,
-                        String backdropPath, Double popularity, Integer voteCount, Double voteAvarege, Boolean video){
+                       Integer id, Integer runtime, String originalTitle, String originalLanguage, String title,
+                       String backdropPath, Double popularity, Integer voteCount, Double voteAvarege, Boolean video) {
         this.posterPath = posterPath;
         this.adult = adult;
         this.overview = overview;
@@ -143,6 +144,7 @@ public class MovieObject {
     public void setOriginalLanguage(String originalLanguage) {
         this.originalLanguage = originalLanguage;
     }
+
     public Integer getRuntime() {
         return runtime;
     }

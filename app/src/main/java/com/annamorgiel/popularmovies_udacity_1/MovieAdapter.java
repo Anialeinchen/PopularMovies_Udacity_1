@@ -26,7 +26,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     private static final String TAG = MovieAdapter.class.getSimpleName();
 
-    private List<MovieObject> movieList = new ArrayList<MovieObject>() {};
+    private List<MovieObject> movieList = new ArrayList<MovieObject>() {
+    };
     private View.OnClickListener mOnClickListener;
 
     public MovieAdapter(View.OnClickListener mOnClickListener) {
@@ -73,15 +74,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
 
-    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        public final ImageView posterImageView;
+    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public static final String movieId = "movieId";
+        public final ImageView posterImageView;
 
-        public MovieViewHolder(View view){
+        public MovieViewHolder(View view) {
             super(view);
             posterImageView = (ImageView) view.findViewById(R.id.poster_iv);
             view.setOnClickListener(this);
         }
+
         public void onClick(View view) {
             Class destinationClass = DetailActivity.class;
             Integer adapterPosition = getAdapterPosition();

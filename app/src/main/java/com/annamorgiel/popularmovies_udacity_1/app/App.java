@@ -12,17 +12,15 @@ import com.annamorgiel.popularmovies_udacity_1.Rest.RestClient;
 public class App extends Application {
     private static RestClient restClient;
 
+    public static RestClient getRestClient() {
+        return restClient;
+    }
+
     @Override
-    public void onCreate()
-    {
+    public void onCreate() {
         super.onCreate();
 
         restClient = new RestClient();
-    }
-
-    public static RestClient getRestClient()
-    {
-        return restClient;
     }
 
 }

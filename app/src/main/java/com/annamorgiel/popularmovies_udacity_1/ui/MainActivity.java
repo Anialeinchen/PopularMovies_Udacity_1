@@ -25,16 +25,15 @@ import retrofit2.Response;
 
 import static com.annamorgiel.popularmovies_udacity_1.BuildConfig.THE_MOVIE_DB_API_KEY;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-
+    private static final int NUM_GRID_ITEM = 100;
+    private static RestClient mRestClient = new RestClient();
     private MovieAdapter adapter;
     private String sortByPopular = "popular";
     private String sortByHighestRated = "top_rated";
-    private static final int NUM_GRID_ITEM = 100;
     private List<MovieObject> movieList;
     private View.OnClickListener listener;
-    private static RestClient mRestClient = new RestClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +43,9 @@ public class MainActivity extends AppCompatActivity{
 
         //find RecyclerView and set GridLayoutManager to handle ViewHolders in a grid
         RecyclerView poster_rv = (RecyclerView) findViewById(R.id.rv_movies);
-        if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             poster_rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
-        }
-        else{
+        } else {
             poster_rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
         }
         //GridLayoutManager layoutManager = new GridLayoutManager(this,2);
@@ -86,7 +84,7 @@ public class MainActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-    private void fetchMovies(String sortby){
+    private void fetchMovies(String sortby) {
         final Call movieListCall = mRestClient.getMovieService().getMovies(sortby, THE_MOVIE_DB_API_KEY);
         movieListCall.enqueue(new Callback<List<MovieObject>>() {
             @Override

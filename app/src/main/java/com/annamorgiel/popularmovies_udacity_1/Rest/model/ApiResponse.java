@@ -10,14 +10,14 @@ import java.util.List;
 
 @Parcel
 public class ApiResponse {
-//changed total_movies to total results and also movies to results
+    //changed total_movies to total results and also movies to results
     //giuhi
     @SerializedName("page")
     @Expose
     private Integer page;
     @SerializedName("results")
     @Expose
-    private List<MovieObject> movies =  new ArrayList<MovieObject>();
+    private List<MovieObject> movies = new ArrayList<MovieObject>();
     @SerializedName("total_results")
     @Expose
     private Integer totalMovieObjects;

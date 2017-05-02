@@ -18,7 +18,6 @@ public interface MovieService {
     //we get the list of movies
 
     /**
-     *
      * @param sortby [popular] [new movies] replaces static parameter in network request
      * @param apiKey is for dynamic parameters, queries the result with =? apiKey
      * @return
