@@ -60,6 +60,30 @@ public class MovieObject {
     @Expose
     private Double voteAverage;
 
+    public MovieObject() {
+    }
+
+    public MovieObject(String posterPath, Boolean adult, String overview, String releaseDate, List<Integer> genreIds,
+                       Integer id, Integer runtime, String originalTitle, String originalLanguage, String title,
+                       String backdropPath, Double popularity, Integer voteCount, Double voteAvarege, Boolean video) {
+        this.posterPath = posterPath;
+        this.adult = adult;
+        this.overview = overview;
+        this.releaseDate = releaseDate;
+        this.genreIds = genreIds;
+        this.id = id;
+        this.runtime = runtime;
+        this.originalTitle = originalTitle;
+        this.originalLanguage = originalLanguage;
+        this.title = title;
+        this.backdropPath = backdropPath;
+        this.popularity = popularity;
+        this.voteCount = voteCount;
+        this.voteAverage = voteAvarege;
+        this.video = video;
+
+    }
+
     public String getPosterPath() {
         return posterPath;
     }
