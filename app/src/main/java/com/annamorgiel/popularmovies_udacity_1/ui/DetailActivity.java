@@ -56,7 +56,7 @@ public class DetailActivity extends Activity {
 
     private void fetchMovieDetails(Integer id){
         final Call movieDetailCall = App.getRestClient().getMovieService().getMovieDetails(id, THE_MOVIE_DB_API_KEY);
-        movieDetailCall.enqueue(new Callback<MovieObject>() {
+         movieDetailCall.enqueue(new Callback<MovieObject>() {
             @Override
             public void onResponse(Call<MovieObject> call, Response<MovieObject> response) {
                 // get raw response
