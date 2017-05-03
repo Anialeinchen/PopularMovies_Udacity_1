@@ -24,13 +24,18 @@ public class ApiResponse implements Parcelable{
     @Expose
     private Integer totalPages;
 
-    protected ApiResponse(android.os.Parcel in) {
+    protected ApiResponse() {
     }
 
     public static final Creator<ApiResponse> CREATOR = new Creator<ApiResponse>() {
         @Override
         public ApiResponse createFromParcel(android.os.Parcel in) {
-            return new ApiResponse(in);
+            ApiResponse instance = new ApiResponse();
+            instance.page = ((Integer) in.readValue((Integer.class.getClassLoader())));
+            in.readList(instance.movies, (com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject.class.getClassLoader()));
+            instance.totalMovieObjects = ((Integer) in.readValue((Integer.class.getClassLoader())));
+            instance.totalPages = ((Integer) in.readValue((Integer.class.getClassLoader())));
+            return instance;
         }
 
         @Override
@@ -78,5 +83,9 @@ public class ApiResponse implements Parcelable{
 
     @Override
     public void writeToParcel(android.os.Parcel dest, int flags) {
+        dest.writeValue(page);
+        dest.writeList(movies);
+        dest.writeValue(totalMovieObjects);
+        dest.writeValue(totalPages);
     }
 }
