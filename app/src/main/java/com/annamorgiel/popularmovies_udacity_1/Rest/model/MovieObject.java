@@ -1,9 +1,10 @@
 package com.annamorgiel.popularmovies_udacity_1.Rest.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import org.parceler.Parcel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +12,8 @@ import java.util.List;
 /**
  * Created by Anna Morgiel on 23.04.2017.
  */
-@Parcel
-public class MovieObject {
+
+public class MovieObject implements Parcelable{
 
     @SerializedName("poster_path")
     @Expose
@@ -59,6 +60,28 @@ public class MovieObject {
     @SerializedName("vote_average")
     @Expose
     private Double voteAverage;
+
+    protected MovieObject(Parcel in) {
+        posterPath = in.readString();
+        overview = in.readString();
+        releaseDate = in.readString();
+        originalTitle = in.readString();
+        originalLanguage = in.readString();
+        title = in.readString();
+        backdropPath = in.readString();
+    }
+
+    public static final Creator<MovieObject> CREATOR = new Creator<MovieObject>() {
+        @Override
+        public MovieObject createFromParcel(Parcel in) {
+            return new MovieObject(in);
+        }
+
+        @Override
+        public MovieObject[] newArray(int size) {
+            return new MovieObject[size];
+        }
+    };
 
     public String getPosterPath() {
         return posterPath;
@@ -178,6 +201,22 @@ public class MovieObject {
 
     public void setVoteAverage(Double voteAverage) {
         this.voteAverage = voteAverage;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(posterPath);
+        dest.writeString(overview);
+        dest.writeString(releaseDate);
+        dest.writeString(originalTitle);
+        dest.writeString(originalLanguage);
+        dest.writeString(title);
+        dest.writeString(backdropPath);
     }
 }
 

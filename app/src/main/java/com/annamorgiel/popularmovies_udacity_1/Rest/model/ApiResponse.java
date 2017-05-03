@@ -1,5 +1,7 @@
 package com.annamorgiel.popularmovies_udacity_1.Rest.model;
 
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -9,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Parcel
-public class ApiResponse {
+public class ApiResponse implements Parcelable{
 //changed total_movies to total results and also movies to results
     //giuhi
     @SerializedName("page")
@@ -24,6 +26,21 @@ public class ApiResponse {
     @SerializedName("total_pages")
     @Expose
     private Integer totalPages;
+
+    protected ApiResponse(android.os.Parcel in) {
+    }
+
+    public static final Creator<ApiResponse> CREATOR = new Creator<ApiResponse>() {
+        @Override
+        public ApiResponse createFromParcel(android.os.Parcel in) {
+            return new ApiResponse(in);
+        }
+
+        @Override
+        public ApiResponse[] newArray(int size) {
+            return new ApiResponse[size];
+        }
+    };
 
     public Integer getPage() {
         return page;
@@ -57,4 +74,12 @@ public class ApiResponse {
         this.totalPages = totalPages;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(android.os.Parcel dest, int flags) {
+    }
 }
