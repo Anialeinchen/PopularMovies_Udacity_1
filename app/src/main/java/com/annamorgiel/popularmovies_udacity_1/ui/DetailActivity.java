@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.R.attr.rating;
 import static com.annamorgiel.popularmovies_udacity_1.BuildConfig.THE_MOVIE_DB_API_KEY;
 
 /**
@@ -39,6 +41,7 @@ public class DetailActivity extends Activity {
     private SQLiteDatabase db;
     String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185/";
     MovieObject movie;
+    private RatingBar ratingBar;
     @BindView(R.id.detail_poster_iv) ImageView poster_detail;
     @BindView(R.id.detail_movie_title) TextView title;
     @BindView(R.id.detail_release_date_tv) TextView release_date;
@@ -60,10 +63,11 @@ public class DetailActivity extends Activity {
             movieId = intentThatStartedThisActivity.getIntExtra("movieId", 22);
         }
         fetchMovieDetails(movieId);
+        addListenerOnRatingBar();
 
         MovieDbHelper dbHelper = new MovieDbHelper(this);
         db = dbHelper.getWritableDatabase();
-
+        //todo move to MainActivity and getAllMovies as well?
         Cursor cursor = getAllMovies();
     }
 
@@ -98,7 +102,7 @@ public class DetailActivity extends Activity {
         return db.query(MovieContract.MovieEntry.TABLE_NAME, null,null,null,null,null, MovieContract.MovieEntry.COLUMN_NAME_TITLE);
     }
 
-    private long addNewFavouriteMovie(String posterPath, Boolean adult, String overview, String releaseDate, Integer runtime, String originalTitle,
+    private long addMovieToFavourites(String posterPath, Boolean adult, String overview, String releaseDate, Integer runtime, String originalTitle,
                                       String originalLanguage, String title, String backdropPath, Double popularity, Integer voteCount,
                                       Boolean video, Double voteAverage){
         fav = (Button) findViewById(R.id.detail_favorites_button);
@@ -123,5 +127,16 @@ public class DetailActivity extends Activity {
 
         return db.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
     }
+
+    private boolean removeMovieFromFavourites(long id) {
+        return db.delete(MovieContract.MovieEntry.TABLE_NAME, MovieContract.MovieEntry._ID + "=" + id, null) > 0;
+    }
+
+    public void addListenerOnRatingBar() {
+
+        ratingBar = (RatingBar) findViewById(R.id.rating_bar);
+                ranking.setText(String.valueOf(rating));
+
+        }
     }
 
