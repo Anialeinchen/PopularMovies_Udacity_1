@@ -1,8 +1,12 @@
 package com.annamorgiel.popularmovies_udacity_1.ui;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,6 +15,8 @@ import com.annamorgiel.popularmovies_udacity_1.R;
 import com.annamorgiel.popularmovies_udacity_1.Rest.RestClient;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
 import com.annamorgiel.popularmovies_udacity_1.app.App;
+import com.annamorgiel.popularmovies_udacity_1.data.MovieContract;
+import com.annamorgiel.popularmovies_udacity_1.data.MovieDbHelper;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -29,6 +35,8 @@ public class DetailActivity extends Activity {
 
     Long clickedItemId = null;
     Integer movieId = null;
+    private Button fav;
+    private SQLiteDatabase db;
     String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185/";
     MovieObject movie;
     @BindView(R.id.detail_poster_iv) ImageView poster_detail;
@@ -52,6 +60,11 @@ public class DetailActivity extends Activity {
             movieId = intentThatStartedThisActivity.getIntExtra("movieId", 22);
         }
         fetchMovieDetails(movieId);
+
+        MovieDbHelper dbHelper = new MovieDbHelper(this);
+        db = dbHelper.getWritableDatabase();
+
+        Cursor cursor = getAllMovies();
     }
 
     private void fetchMovieDetails(Integer id){
@@ -81,7 +94,34 @@ public class DetailActivity extends Activity {
             }
         });
     }
+    private Cursor getAllMovies(){
+        return db.query(MovieContract.MovieEntry.TABLE_NAME, null,null,null,null,null, MovieContract.MovieEntry.COLUMN_NAME_TITLE);
+    }
 
+    private long addNewFavouriteMovie(String posterPath, Boolean adult, String overview, String releaseDate, Integer runtime, String originalTitle,
+                                      String originalLanguage, String title, String backdropPath, Double popularity, Integer voteCount,
+                                      Boolean video, Double voteAverage){
+        fav = (Button) findViewById(R.id.detail_favorites_button);
 
+        Toast.makeText(getApplicationContext(), "Yay! New favourite Movie!",
+                Toast.LENGTH_LONG).show();
+
+        ContentValues cv = new ContentValues();
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_POSTER_PATH, posterPath);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_ADULT, adult);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_OVERVIEW, overview);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_RELEASE_DATE, releaseDate);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_RUNTIME, runtime);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_TITLE, originalTitle);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_LANGUAGE, originalLanguage);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_TITLE,title);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_BACKDROP_PATH, backdropPath);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_POPULARITY, popularity);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_VOTE_COUNT, voteCount);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_VIDEO, video);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_VOTE_AVERAGE, voteAverage);
+
+        return db.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
+    }
     }
 
