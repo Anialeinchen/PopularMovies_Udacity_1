@@ -35,6 +35,8 @@ import static com.annamorgiel.popularmovies_udacity_1.BuildConfig.THE_MOVIE_DB_A
 
 public class DetailActivity extends Activity {
 
+    //change signature addFavMovies
+
     Long clickedItemId = null;
     Integer movieId = null;
     private Button fav;
@@ -48,6 +50,12 @@ public class DetailActivity extends Activity {
     @BindView(R.id.detail_movie_length_tv) TextView length;
     @BindView(R.id.rdetail_anking_tv) TextView ranking;
     @BindView(R.id.detail_movie_description) TextView desc;
+    //todo MovieObject myMovie -> fetchmovie -> addFavMovies
+    //todo view view
+    //public void myFancyMethod(View v) {
+    // does something very interesting
+}
+
     //TextView trailer = (TextView) findViewById(R.id.trailer1_tv);
     private static RestClient mRestClient = new RestClient();
 
@@ -100,7 +108,7 @@ public class DetailActivity extends Activity {
     private Cursor getAllMovies(){
         return db.query(MovieContract.MovieEntry.TABLE_NAME, null,null,null,null,null, MovieContract.MovieEntry.COLUMN_NAME_TITLE);
     }
-
+//see fancy method
     private long addMovieToFavourites(String posterPath, Boolean adult, String overview, String releaseDate, Integer runtime, String originalTitle,
                                       String originalLanguage, String title, String backdropPath, Double popularity, Integer voteCount,
                                       Boolean video, Double voteAverage){
@@ -108,7 +116,7 @@ public class DetailActivity extends Activity {
 
         Toast.makeText(getApplicationContext(), "Yay! New favourite Movie!",
                 Toast.LENGTH_LONG).show();
-
+//ViewObject -> View
         ContentValues cv = new ContentValues();
         cv.put(MovieContract.MovieEntry.COLUMN_NAME_POSTER_PATH, posterPath);
         cv.put(MovieContract.MovieEntry.COLUMN_NAME_ADULT, adult);
