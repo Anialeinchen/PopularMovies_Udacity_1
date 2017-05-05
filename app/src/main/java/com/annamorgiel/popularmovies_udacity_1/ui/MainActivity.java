@@ -121,15 +121,72 @@ public class MainActivity extends AppCompatActivity{
     private Cursor getAllMovies(){
         return db.query(MovieContract.MovieEntry.TABLE_NAME, null,null,null,null,null, MovieContract.MovieEntry.COLUMN_NAME_TITLE);
     }
-}
+
 
     private long addNewMovie(String posterPath, Boolean adult, String overview, String releaseDate, Integer runtime, String originalTitle,
                              String originalLanguage, String title, String backdropPath, Double popularity, Integer voteCount,
                              Boolean video, Double voteAverage){
         ContentValues cv = new ContentValues();
         cv.put(MovieContract.MovieEntry.COLUMN_NAME_POSTER_PATH, posterPath);
-        cv.put(MovieContract.MovieEntry.);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_ADULT, adult);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_OVERVIEW, overview);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_RELEASE_DATE, releaseDate);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_RUNTIME, runtime);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_TITLE, originalTitle);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_LANGUAGE, originalLanguage);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_TITLE,title);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_BACKDROP_PATH, backdropPath);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_POPULARITY, popularity);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_VOTE_COUNT, voteCount);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_VIDEO, video);
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_VOTE_AVERAGE, voteAverage);
 
-//todo ania
-        return db.insert(MovieContract.MovieEntry.TABLE_NAME, null, C);
+        return db.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
     }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
