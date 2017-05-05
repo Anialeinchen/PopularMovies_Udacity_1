@@ -23,7 +23,7 @@ public class MovieDbHelper extends SQLiteOpenHelper{
                 MovieContract.MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 MovieContract.MovieEntry.COLUMN_NAME_POSTER_PATH + " TEXT NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_NAME_ADULT + "INTEGER NOT NULL, " +
-                MovieContract.MovieEntry.COLUMN_NAME_OVERVIEW + " TEXT NOT NULL; " +
+                MovieContract.MovieEntry.COLUMN_NAME_OVERVIEW + " TEXT NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_NAME_RELEASE_DATE + "DATE NOT NULL," +
                 //todo: save runtime as integer?
                 MovieContract.MovieEntry.COLUMN_NAME_RUNTIME + " TEXT NOT NULL, " +
@@ -34,7 +34,7 @@ public class MovieDbHelper extends SQLiteOpenHelper{
                 MovieContract.MovieEntry.COLUMN_NAME_POPULARITY + " REAL NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_NAME_VOTE_COUNT + " INTEGER NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_NAME_VIDEO + " INTEGER NOT NULL, " +
-                MovieContract.MovieEntry.COLUMN_NAME_VOTE_AVERAGE + " REAL NOT NULL, " +
+                MovieContract.MovieEntry.COLUMN_NAME_VOTE_AVERAGE + " REAL NOT NULL " +
                 "); ";
 
         db.execSQL(SQL_CREATE_MOVIECONTRACT_TABLE);

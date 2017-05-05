@@ -14,7 +14,7 @@
         android:background="#80CBC4"
         android:text="Chappie"
         android:textAlignment="center"
-        android:textColor="#ffffff"
+        android:textColor="#fefaff"
         android:textSize="34sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
