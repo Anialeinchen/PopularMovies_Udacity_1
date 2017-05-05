@@ -67,7 +67,6 @@ public class DetailActivity extends Activity {
 
         MovieDbHelper dbHelper = new MovieDbHelper(this);
         db = dbHelper.getWritableDatabase();
-        //todo move to MainActivity and getAllMovies as well?
         Cursor cursor = getAllMovies();
     }
 
