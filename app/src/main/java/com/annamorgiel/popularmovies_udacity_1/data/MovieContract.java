@@ -13,8 +13,12 @@ public class MovieContract {
     // make the constructor private.
     private MovieContract() {}
 
+    public static final String AUTHORITY = "com.annamorgiel";
+    //todo implement BASE_CONTENT_URI
+    //Define the possible paths for accessing data in this contract
     /* Inner class that defines the table contents */
     public static class MovieEntry implements BaseColumns {
+        //add rest
         //perhaps unnecessary
         public static final String TABLE_NAME = "movie";
 
