@@ -1,13 +1,16 @@
 package com.annamorgiel.popularmovies_udacity_1.ui;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +44,7 @@ public class DetailActivity extends Activity {
     private SQLiteDatabase db;
     String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185/";
     MovieObject movie;
+    @BindView(R.id.listview) ListView listView;
     @BindView(R.id.detail_poster_iv) ImageView poster_detail;
     @BindView(R.id.detail_movie_title) TextView title;
     @BindView(R.id.detail_release_date_tv) TextView release_date;
@@ -97,6 +101,16 @@ public class DetailActivity extends Activity {
         });
     }
 
+    private void watchYoutubeVideo(String id){
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://www.youtube.com/watch?v=" + id));
+        try {
+            startActivity(appIntent);
+        } catch (ActivityNotFoundException ex) {
+            startActivity(webIntent);
+        }
+    }
     private void fetchVideos(Integer id){
         final Call movieDetailCall = App.getRestClient().getMovieService().getVideos(id, THE_MOVIE_DB_API_KEY);
         movieDetailCall.enqueue(new Callback<VideoObject>() {
