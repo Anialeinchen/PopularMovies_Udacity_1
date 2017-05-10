@@ -29,4 +29,7 @@ public interface MovieService {
     @GET("movie/{id}")
     Call<MovieObject> getMovieDetails(@Path("id") Integer id, @Query("api_key") String name);
 
+    @GET("movie/{id}/videos")
+    Call<MovieObject> getVideos(@Path("id") Integer id, @Query("api_key") String name);
+
 }
