@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.annamorgiel.popularmovies_udacity_1.R;
 import com.annamorgiel.popularmovies_udacity_1.Rest.RestClient;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
+import com.annamorgiel.popularmovies_udacity_1.Rest.model.VideoObject;
 import com.annamorgiel.popularmovies_udacity_1.app.App;
 import com.annamorgiel.popularmovies_udacity_1.data.MovieContract;
 import com.annamorgiel.popularmovies_udacity_1.data.MovieDbHelper;
@@ -36,6 +37,7 @@ public class DetailActivity extends Activity {
     Long clickedItemId = null;
     Integer movieId = null;
     private Button fav;
+    String videoKey = null;
     private SQLiteDatabase db;
     String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185/";
     MovieObject movie;
@@ -94,6 +96,26 @@ public class DetailActivity extends Activity {
             }
         });
     }
+
+    private void fetchVideos(Integer id){
+        final Call movieDetailCall = App.getRestClient().getMovieService().getVideos(id, THE_MOVIE_DB_API_KEY);
+        movieDetailCall.enqueue(new Callback<VideoObject>() {
+            @Override
+            public void onResponse(Call<VideoObject> call, Response<VideoObject> response) {
+                // get raw response
+
+               videoKey = response.body().getKey();
+            }
+
+            @Override
+            public void onFailure(Call<VideoObject> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Please check your internet connection, buddy!",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
     private Cursor getAllMovies(){
         return db.query(MovieContract.MovieEntry.TABLE_NAME, null,null,null,null,null, MovieContract.MovieEntry.COLUMN_NAME_TITLE);
     }
