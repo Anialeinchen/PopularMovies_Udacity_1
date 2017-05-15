@@ -22,6 +22,11 @@
             android:label="@string/detail_activity"
             android:parentActivityName=".ui.MainActivity"/>
 
+        <provider
+            android:name="com.annamorgiel.popularmovies_udacity_1.data.MovieContentProvider"
+            android:authorities="com.annamorgiel"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

@@ -24,7 +24,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     private static final String TAG = MovieAdapter.class.getSimpleName();
 
-    private List<MovieObject> movieList = new ArrayList<MovieObject>() {};
+    private List<MovieObject> movieList = new ArrayList<MovieObject>() {
+    };
     private View.OnClickListener mOnClickListener;
 
     public MovieAdapter(View.OnClickListener mOnClickListener) {
@@ -71,15 +72,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
 
-    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final ImageView posterImageView;
         public static final String movieId = "movieId";
 
-        public MovieViewHolder(View view){
+        public MovieViewHolder(View view) {
             super(view);
             posterImageView = (ImageView) view.findViewById(R.id.poster_iv);
             view.setOnClickListener(this);
         }
+
         public void onClick(View view) {
             Class destinationClass = DetailActivity.class;
             Integer adapterPosition = getAdapterPosition();
@@ -87,7 +89,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             Intent intentToStartDetailActivity = new Intent(view.getContext(), destinationClass);
             //done? delete string literals -> public static final
             //create util class?
-            intentToStartDetailActivity.putExtra(movieId,movieIdInt);
+            intentToStartDetailActivity.putExtra(movieId, movieIdInt);
             view.getContext().startActivity(intentToStartDetailActivity);
         }
     }
