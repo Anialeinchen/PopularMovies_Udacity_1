@@ -23,12 +23,21 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
     private static final String TAG = MovieAdapter.class.getSimpleName();
+    private int movieCount;
+    private Context context;
 
     private List<MovieObject> movieList = new ArrayList<MovieObject>() {
     };
     private View.OnClickListener mOnClickListener;
 
     public MovieAdapter(View.OnClickListener mOnClickListener) {
+        this.mOnClickListener = mOnClickListener;
+        this.movieCount = movieList.size();
+    }
+
+    public MovieAdapter(Context context, int count, View.OnClickListener mOnClickListener){
+        this.mOnClickListener = mOnClickListener;
+        this.context = context;
         this.mOnClickListener = mOnClickListener;
     }
 
@@ -68,7 +77,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public int getItemCount() {
-        return movieList.size();
+        return movieCount;
     }
 
 

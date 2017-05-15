@@ -7,4 +7,5 @@
     <string name="sort_by_popularity">sort by popularity</string>
     <string name="sort_by_highest_rated">sort by highest rated</string>
     <string name="detail_activity">DetailActivity</string>
+    <string name="sort_by_favourites">sort by favourites</string>
 </resources>

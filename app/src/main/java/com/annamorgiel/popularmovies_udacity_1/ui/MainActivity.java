@@ -1,6 +1,8 @@
 package com.annamorgiel.popularmovies_udacity_1.ui;
 
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,6 +18,8 @@ import com.annamorgiel.popularmovies_udacity_1.R;
 import com.annamorgiel.popularmovies_udacity_1.Rest.RestClient;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.ApiResponse;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
+import com.annamorgiel.popularmovies_udacity_1.data.MovieContract;
+import com.annamorgiel.popularmovies_udacity_1.data.MovieDbHelper;
 
 import java.util.List;
 
@@ -35,6 +39,7 @@ import static com.annamorgiel.popularmovies_udacity_1.BuildConfig.THE_MOVIE_DB_A
 public class MainActivity extends AppCompatActivity{
     private static final String TAG = "MainActivity";
 
+    private SQLiteDatabase db;
 
     private MovieAdapter movieAdapter;
     private String sortByPopular = "popular";
@@ -59,6 +64,7 @@ public class MainActivity extends AppCompatActivity{
             poster_rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
         }
         //todo Ania: change adapter to accept cursor and context
+
         movieAdapter = new MovieAdapter(movieListener);
         poster_rv.setAdapter(movieAdapter);
         poster_rv.setHasFixedSize(true);
@@ -89,9 +95,20 @@ public class MainActivity extends AppCompatActivity{
                 fetchMovies(sortByHighestRated);
                 movieAdapter.notifyDataSetChanged();
                 return true;
+            case R.id.sort_by_favourites:
+                MovieDbHelper dbHelper = new MovieDbHelper(this);
+                db = dbHelper.getWritableDatabase();
+                Cursor cursor = getAllMovies();
+                movieAdapter = new MovieAdapter(getBaseContext(), cursor.getCount(), movieListener);
+                movieAdapter.notifyDataSetChanged();
+                return true;
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private Cursor getAllMovies(){
+        return db.query(MovieContract.MovieEntry.TABLE_NAME, null,null,null,null,null, MovieContract.MovieEntry.COLUMN_NAME_TITLE);
     }
 
     private void fetchMovies(String sortby){

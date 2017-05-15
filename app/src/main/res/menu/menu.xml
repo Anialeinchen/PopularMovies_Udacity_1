@@ -15,4 +15,10 @@
         android:orderInCategory="1"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/sort_by_favourites"
+        android:title="@string/sort_by_favourites"
+        android:orderInCategory="1"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:showAsAction="collapseActionView" />
 </menu>

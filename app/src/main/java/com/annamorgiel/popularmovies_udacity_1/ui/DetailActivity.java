@@ -3,7 +3,6 @@ package com.annamorgiel.popularmovies_udacity_1.ui;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -84,7 +83,6 @@ public class DetailActivity extends Activity {
         MovieDbHelper dbHelper = new MovieDbHelper(this);
         db = dbHelper.getWritableDatabase();
 
-        Cursor cursor = getAllMovies();
 
         trailers_rv.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         videoAdapter = new VideoAdapter(videoListener);
@@ -201,9 +199,6 @@ public class DetailActivity extends Activity {
         return db.delete(MovieContract.MovieEntry.TABLE_NAME, MovieContract.MovieEntry._ID + "=" + id, null) > 0;
     }
 
-    private Cursor getAllMovies(){
-        return db.query(MovieContract.MovieEntry.TABLE_NAME, null,null,null,null,null, MovieContract.MovieEntry.COLUMN_NAME_TITLE);
-    }
 
     /*private long addNewFavouriteMovie(String posterPath, Boolean adult, String overview, String releaseDate, Integer runtime, String originalTitle,
                                       String originalLanguage, String title, String backdropPath, Double popularity, Integer voteCount,
