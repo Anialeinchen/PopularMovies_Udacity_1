@@ -1,6 +1,7 @@
 package com.annamorgiel.popularmovies_udacity_1.Rest.service;
 
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.ApiResponse;
+import com.annamorgiel.popularmovies_udacity_1.Rest.model.ApiReviewResponse;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.ApiVideoResponse;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
 
@@ -32,5 +33,8 @@ public interface MovieService {
 
     @GET("movie/{id}/videos")
     Call<ApiVideoResponse> getVideos(@Path("id") Integer id, @Query("api_key") String name);
+
+    @GET("movie/{id}/reviews")
+    Call<ApiReviewResponse> getReviews(@Path("id") Integer id, @Query("api_key") String name);
 
 }

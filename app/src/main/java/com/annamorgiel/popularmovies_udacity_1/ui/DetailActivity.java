@@ -16,9 +16,12 @@ import android.widget.Toast;
 
 import com.annamorgiel.popularmovies_udacity_1.R;
 import com.annamorgiel.popularmovies_udacity_1.Rest.RestClient;
+import com.annamorgiel.popularmovies_udacity_1.Rest.model.ApiReviewResponse;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.ApiVideoResponse;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
+import com.annamorgiel.popularmovies_udacity_1.Rest.model.ReviewObject;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.VideoObject;
+import com.annamorgiel.popularmovies_udacity_1.ReviewAdapter;
 import com.annamorgiel.popularmovies_udacity_1.VideoAdapter;
 import com.annamorgiel.popularmovies_udacity_1.app.App;
 import com.annamorgiel.popularmovies_udacity_1.data.MovieContract;
@@ -51,6 +54,10 @@ public class DetailActivity extends Activity {
     private VideoAdapter videoAdapter;
     private View.OnClickListener videoListener;
     private List<VideoObject> videoList;
+
+    private ReviewAdapter reviewAdapter;
+    private View.OnClickListener reviewListener;
+    private List<ReviewObject> reviewList;
     @BindView(R.id.detail_poster_iv) ImageView poster_detail;
     @BindView(R.id.detail_movie_title) TextView title;
     @BindView(R.id.detail_release_date_tv) TextView release_date;
@@ -58,7 +65,7 @@ public class DetailActivity extends Activity {
     @BindView(R.id.rdetail_anking_tv) TextView ranking;
     @BindView(R.id.detail_movie_description) TextView desc;
     @BindView(R.id.rv_videos) RecyclerView trailers_rv;
-    //TextView trailer = (TextView) findViewById(R.id.trailer1_tv);
+    @BindView(R.id.rv_reviews) RecyclerView reviews_rv;
     private static RestClient mRestClient = new RestClient();
 
 
@@ -85,6 +92,11 @@ public class DetailActivity extends Activity {
         trailers_rv.setHasFixedSize(true);
         fetchVideos(movieId);
 
+        reviews_rv.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        reviewAdapter = new ReviewAdapter(reviewListener);
+        reviews_rv.setAdapter(reviewAdapter);
+        reviews_rv.setHasFixedSize(true);
+        fetchReviews(movieId);
     }
 
     private void fetchMovieDetails(Integer id){
@@ -133,6 +145,26 @@ public class DetailActivity extends Activity {
             }
         });
     }
+
+    private void fetchReviews(Integer id){
+        final Call videoCall = App.getRestClient().getMovieService().getReviews(id, THE_MOVIE_DB_API_KEY);
+        videoCall.enqueue(new Callback<List<ReviewObject>>() {
+            @Override
+            public void onResponse(Call<List<ReviewObject>> call, Response<List<ReviewObject>> response) {
+                // get raw response
+                ApiReviewResponse reviewResponse = (ApiReviewResponse) response.body();
+                reviewList = reviewResponse.getReviewObjects();
+                reviewAdapter.setReviewList(reviewList);
+            }
+
+            @Override
+            public void onFailure(Call<List<ReviewObject>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Please check your internet connection, buddy!",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
 
 
     private Cursor getAllMovies(){
