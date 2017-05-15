@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity{
                 MovieDbHelper dbHelper = new MovieDbHelper(this);
                 db = dbHelper.getWritableDatabase();
                 Cursor cursor = getAllMovies();
-                movieAdapter = new MovieAdapter(getBaseContext(), cursor.getCount(), movieListener);
+                movieAdapter = new MovieAdapter(getBaseContext(), cursor, movieListener);
                 movieAdapter.notifyDataSetChanged();
                 return true;
 
