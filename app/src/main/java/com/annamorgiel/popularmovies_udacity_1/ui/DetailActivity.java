@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -78,6 +79,7 @@ public class DetailActivity extends Activity {
 
         Cursor cursor = getAllMovies();
 
+        trailers_rv.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         videoAdapter = new VideoAdapter(videoListener);
         trailers_rv.setAdapter(videoAdapter);
         trailers_rv.setHasFixedSize(true);
