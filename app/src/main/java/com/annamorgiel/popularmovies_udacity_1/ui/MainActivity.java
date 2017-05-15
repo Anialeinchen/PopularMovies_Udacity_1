@@ -19,32 +19,39 @@ import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.annamorgiel.popularmovies_udacity_1.BuildConfig.THE_MOVIE_DB_API_KEY;
 
+
+/**
+ * Created by Anna Morgiel on 23.04.2017.
+ */
+
 public class MainActivity extends AppCompatActivity{
     private static final String TAG = "MainActivity";
 
 
-    private MovieAdapter adapter;
+    private MovieAdapter movieAdapter;
     private String sortByPopular = "popular";
     private String sortByHighestRated = "top_rated";
-    private static final int NUM_GRID_ITEM = 100;
     private List<MovieObject> movieList;
-    private View.OnClickListener listener;
+    private View.OnClickListener movieListener;
     private static RestClient mRestClient = new RestClient();
+    @BindView(R.id.rv_movies) RecyclerView poster_rv;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         mRestClient.getMovieService();
 
-        //find RecyclerView and set GridLayoutManager to handle ViewHolders in a grid
-        RecyclerView poster_rv = (RecyclerView) findViewById(R.id.rv_movies);
         if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
             poster_rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
         }
@@ -55,10 +62,11 @@ public class MainActivity extends AppCompatActivity{
         //GridLayoutManager layoutManager = new GridLayoutManager(this,2);
         //poster_rv.setLayoutManager(layoutManager);
         //todo Ania: change adapter to accept cursor and context
-        adapter = new MovieAdapter(listener);
-        poster_rv.setAdapter(adapter);
+        movieAdapter = new MovieAdapter(movieListener);
+        poster_rv.setAdapter(movieAdapter);
         poster_rv.setHasFixedSize(true);
         fetchMovies(sortByPopular);
+
     }
 
     @Override
@@ -77,12 +85,12 @@ public class MainActivity extends AppCompatActivity{
         switch (id) {
             case R.id.sort_by_popularity:
                 fetchMovies(sortByPopular);
-                adapter.notifyDataSetChanged();
+                movieAdapter.notifyDataSetChanged();
                 return true;
 
             case R.id.sort_by_ranking:
                 fetchMovies(sortByHighestRated);
-                adapter.notifyDataSetChanged();
+                movieAdapter.notifyDataSetChanged();
                 return true;
 
         }
@@ -99,7 +107,7 @@ public class MainActivity extends AppCompatActivity{
                 movieList = movieResponse.getMovieObjects();
                 //movieList = response.body();
                 Log.d(TAG, "onResponse: size:" + movieList.size());
-                adapter.setMovieList(movieList);
+                movieAdapter.setMovieList(movieList);
             }
 
             @Override

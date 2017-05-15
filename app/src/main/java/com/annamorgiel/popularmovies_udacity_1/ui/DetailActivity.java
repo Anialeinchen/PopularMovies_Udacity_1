@@ -1,27 +1,30 @@
 package com.annamorgiel.popularmovies_udacity_1.ui;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.annamorgiel.popularmovies_udacity_1.R;
 import com.annamorgiel.popularmovies_udacity_1.Rest.RestClient;
+import com.annamorgiel.popularmovies_udacity_1.Rest.model.ApiVideoResponse;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.VideoObject;
+import com.annamorgiel.popularmovies_udacity_1.VideoAdapter;
 import com.annamorgiel.popularmovies_udacity_1.app.App;
 import com.annamorgiel.popularmovies_udacity_1.data.MovieContract;
 import com.annamorgiel.popularmovies_udacity_1.data.MovieDbHelper;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,13 +47,16 @@ public class DetailActivity extends Activity {
     private SQLiteDatabase db;
     String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185/";
     MovieObject movie;
-    @BindView(R.id.listview) ListView listView;
+    private VideoAdapter videoAdapter;
+    private View.OnClickListener videoListener;
+    private List<VideoObject> videoList;
     @BindView(R.id.detail_poster_iv) ImageView poster_detail;
     @BindView(R.id.detail_movie_title) TextView title;
     @BindView(R.id.detail_release_date_tv) TextView release_date;
     @BindView(R.id.detail_movie_length_tv) TextView length;
     @BindView(R.id.rdetail_anking_tv) TextView ranking;
     @BindView(R.id.detail_movie_description) TextView desc;
+    @BindView(R.id.rv_videos) RecyclerView trailers_rv;
     //TextView trailer = (TextView) findViewById(R.id.trailer1_tv);
     private static RestClient mRestClient = new RestClient();
 
@@ -71,6 +77,12 @@ public class DetailActivity extends Activity {
         db = dbHelper.getWritableDatabase();
 
         Cursor cursor = getAllMovies();
+
+        videoAdapter = new VideoAdapter(videoListener);
+        trailers_rv.setAdapter(videoAdapter);
+        trailers_rv.setHasFixedSize(true);
+        fetchVideos(movieId);
+
     }
 
     private void fetchMovieDetails(Integer id){
@@ -101,28 +113,19 @@ public class DetailActivity extends Activity {
         });
     }
 
-    private void watchYoutubeVideo(String id){
-        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
-        Intent webIntent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("http://www.youtube.com/watch?v=" + id));
-        try {
-            startActivity(appIntent);
-        } catch (ActivityNotFoundException ex) {
-            startActivity(webIntent);
-        }
-    }
     private void fetchVideos(Integer id){
-        final Call movieDetailCall = App.getRestClient().getMovieService().getVideos(id, THE_MOVIE_DB_API_KEY);
-        movieDetailCall.enqueue(new Callback<VideoObject>() {
+        final Call videoCall = App.getRestClient().getMovieService().getVideos(id, THE_MOVIE_DB_API_KEY);
+        videoCall.enqueue(new Callback<List<VideoObject>>() {
             @Override
-            public void onResponse(Call<VideoObject> call, Response<VideoObject> response) {
+            public void onResponse(Call<List<VideoObject>> call, Response<List<VideoObject>> response) {
                 // get raw response
-
-               videoKey = response.body().getKey();
+                ApiVideoResponse videoResponse = (ApiVideoResponse) response.body();
+                videoList = videoResponse.getVideoObjects();
+                videoAdapter.setVideoList(videoList);
             }
 
             @Override
-            public void onFailure(Call<VideoObject> call, Throwable t) {
+            public void onFailure(Call<List<VideoObject>> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "Please check your internet connection, buddy!",
                         Toast.LENGTH_LONG).show();
             }

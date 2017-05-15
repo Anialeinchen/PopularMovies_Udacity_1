@@ -38,8 +38,7 @@ public class ApiVideoResponse implements Parcelable {
             return (new ApiVideoResponse[size]);
         }
 
-    }
-            ;
+    };
 
     public Integer getId() {
         return id;
@@ -49,12 +48,12 @@ public class ApiVideoResponse implements Parcelable {
         this.id = id;
     }
 
-    public List<VideoObject> getResults() {
+    public List<VideoObject> getVideoObjects() {
         return videos;
     }
 
-    public void setResults(List<VideoObject> results) {
-        this.videos = results;
+    public void setVideoObjects(List<VideoObject> videos) {
+        this.videos = videos;
     }
 
     public void writeToParcel(Parcel dest, int flags) {
