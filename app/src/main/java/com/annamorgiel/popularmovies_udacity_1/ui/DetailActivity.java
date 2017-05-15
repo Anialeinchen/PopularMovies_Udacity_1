@@ -98,6 +98,37 @@ public class DetailActivity extends Activity {
         reviews_rv.setHasFixedSize(true);
         fetchReviews(movieId);
     }
+    //todo discuss use of cursor -> return from a database
+
+    //todo change signature like in fancymethod with View
+    //todo MovieObject extends View? problems with the constructor requiring contect, attrs
+    //todo add another column with booleand favourite in contract?
+    public void addMovieToFavourites(MovieObject movie){
+        fav = (Button) findViewById(R.id.detail_favorites_button);
+
+        Toast.makeText(getApplicationContext(), "Yay! New favourite Movie!",
+                Toast.LENGTH_LONG).show();
+        //ViewObject -> View
+        //todo MovieObject extends  view?
+
+        ContentValues cv = new ContentValues();
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_POSTER_PATH, movie.getPosterPath());
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_ADULT, movie.getAdult());
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_OVERVIEW, movie.getOverview());
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_RELEASE_DATE, movie.getReleaseDate());
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_RUNTIME, movie.getRuntime());
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_TITLE, movie.getTitle());
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_LANGUAGE, movie.getOriginalLanguage());
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_TITLE,movie.getTitle());
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_BACKDROP_PATH, movie.getBackdropPath());
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_POPULARITY, movie.getPopularity());
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_VOTE_COUNT, movie.getVoteCount());
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_VIDEO, movie.getVideo());
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_VOTE_AVERAGE, movie.getVoteAverage());
+
+        db.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
+    }
+
 
     private void fetchMovieDetails(Integer id){
         final Call movieDetailCall = App.getRestClient().getMovieService().getMovieDetails(id, THE_MOVIE_DB_API_KEY);
@@ -165,13 +196,16 @@ public class DetailActivity extends Activity {
         });
     }
 
-
+    //todo implement onclick removefromfavourites (the button shuould have changed state)
+    private boolean removeMovieFromFavourites(long id) {
+        return db.delete(MovieContract.MovieEntry.TABLE_NAME, MovieContract.MovieEntry._ID + "=" + id, null) > 0;
+    }
 
     private Cursor getAllMovies(){
         return db.query(MovieContract.MovieEntry.TABLE_NAME, null,null,null,null,null, MovieContract.MovieEntry.COLUMN_NAME_TITLE);
     }
 
-    private long addNewFavouriteMovie(String posterPath, Boolean adult, String overview, String releaseDate, Integer runtime, String originalTitle,
+    /*private long addNewFavouriteMovie(String posterPath, Boolean adult, String overview, String releaseDate, Integer runtime, String originalTitle,
                                       String originalLanguage, String title, String backdropPath, Double popularity, Integer voteCount,
                                       Boolean video, Double voteAverage){
         fav = (Button) findViewById(R.id.detail_favorites_button);
@@ -195,6 +229,6 @@ public class DetailActivity extends Activity {
         cv.put(MovieContract.MovieEntry.COLUMN_NAME_VOTE_AVERAGE, voteAverage);
 
         return db.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
-    }
+    }*/
     }
 

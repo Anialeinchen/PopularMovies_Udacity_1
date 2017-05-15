@@ -58,9 +58,6 @@ public class MainActivity extends AppCompatActivity{
         else{
             poster_rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
         }
-
-        //GridLayoutManager layoutManager = new GridLayoutManager(this,2);
-        //poster_rv.setLayoutManager(layoutManager);
         //todo Ania: change adapter to accept cursor and context
         movieAdapter = new MovieAdapter(movieListener);
         poster_rv.setAdapter(movieAdapter);
