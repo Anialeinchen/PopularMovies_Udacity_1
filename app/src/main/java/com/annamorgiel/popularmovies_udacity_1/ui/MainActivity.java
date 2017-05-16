@@ -110,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             poster_rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
         }
-        //todo Ania: change adapter to accept cursor and context
         fetchMovies(sortByPopular);
         movieAdapter = new MovieAdapter(movieListener, movieList);
         poster_rv.setAdapter(movieAdapter);
@@ -170,6 +169,8 @@ public class MainActivity extends AppCompatActivity {
                 // get raw response
                 ApiResponse movieResponse = (ApiResponse) response.body();
                 movieList = movieResponse.getMovieObjects();
+                movieAdapter.setMovieList(movieList);
+                movieAdapter.notifyDataSetChanged();
                 //movieList = response.body();
                 Log.d(TAG, "onResponse: size:" + movieList.size());
                 //movieAdapter.setMovieList(movieList);

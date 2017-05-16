@@ -52,12 +52,10 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
     @Override
     public void onBindViewHolder(final VideoViewHolder holder, int position) {
         //todo - how to check if there are more trailers? are all being displayed
+
         TextView tv;
         tv = holder.textView;
-        Integer item;
-        item = 0;
-        tv.setText("Trailer " + item.toString());
-        item++;
+        tv.setText("Trailer " + position);
     }
 
     @Override
