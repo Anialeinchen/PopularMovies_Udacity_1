@@ -14,7 +14,7 @@ public class RestClient {
     private MovieService apiService;
 
 
-    public RestClient(){
+    public RestClient() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -23,8 +23,7 @@ public class RestClient {
         apiService = retrofit.create(MovieService.class);
     }
 
-    public MovieService getMovieService()
-    {
+    public MovieService getMovieService() {
         return apiService;
     }
 }

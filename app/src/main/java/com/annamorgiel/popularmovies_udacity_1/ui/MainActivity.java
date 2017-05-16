@@ -37,83 +37,18 @@ import static com.annamorgiel.popularmovies_udacity_1.BuildConfig.THE_MOVIE_DB_A
  * Created by Anna Morgiel on 23.04.2017.
  */
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-
+    private static RestClient mRestClient = new RestClient();
+    @BindView(R.id.rv_movies)
+    RecyclerView poster_rv;
     private SQLiteDatabase db;
-
     private MovieAdapter movieAdapter;
     private String sortByPopular = "popular";
     private String sortByHighestRated = "top_rated";
     private List<MovieObject> movieList;
+    //todo: movieListener is never assigned?
     private View.OnClickListener movieListener;
-    private static RestClient mRestClient = new RestClient();
-    @BindView(R.id.rv_movies) RecyclerView poster_rv;
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        mRestClient.getMovieService();
-
-        if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            poster_rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
-        }
-        else{
-            poster_rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
-        }
-        //todo Ania: change adapter to accept cursor and context
-        fetchMovies(sortByPopular);
-        movieAdapter = new MovieAdapter(movieListener, movieList);
-        poster_rv.setAdapter(movieAdapter);
-        poster_rv.setHasFixedSize(true);
-
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.sort_by_popularity:
-                fetchMovies(sortByPopular);
-                movieAdapter.setMovieList(movieList);
-                movieAdapter.notifyDataSetChanged();
-                return true;
-
-            case R.id.sort_by_ranking:
-                fetchMovies(sortByHighestRated);
-                movieAdapter.setMovieList(movieList);
-                movieAdapter.notifyDataSetChanged();
-                return true;
-            case R.id.sort_by_favourites:
-                MovieDbHelper dbHelper = new MovieDbHelper(this);
-                db = dbHelper.getWritableDatabase();
-                Cursor cursor = getAllMovies();
-                List<MovieObject> favouriteMoviesFromDB = parseMoviesFromCursor(cursor);
-                movieAdapter.setMovieList(favouriteMoviesFromDB);
-                movieAdapter.notifyDataSetChanged();
-                return true;
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private Cursor getAllMovies(){
-        return db.query(MovieContract.MovieEntry.TABLE_NAME, null,null,null,null,null, MovieContract.MovieEntry.COLUMN_NAME_TITLE);
-    }
 
     public static List<MovieObject> parseMoviesFromCursor(Cursor cursor) {
         List<MovieObject> movieObjects = new ArrayList<>();
@@ -163,7 +98,71 @@ public class MainActivity extends AppCompatActivity{
         return movieObjects;
     }
 
-    private void fetchMovies(String sortby){
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+        mRestClient.getMovieService();
+
+        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            poster_rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+        } else {
+            poster_rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
+        }
+        //todo Ania: change adapter to accept cursor and context
+        fetchMovies(sortByPopular);
+        movieAdapter = new MovieAdapter(movieListener, movieList);
+        poster_rv.setAdapter(movieAdapter);
+        poster_rv.setHasFixedSize(true);
+
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.sort_by_popularity:
+                fetchMovies(sortByPopular);
+                movieAdapter.setMovieList(movieList);
+                movieAdapter.notifyDataSetChanged();
+                return true;
+
+            case R.id.sort_by_ranking:
+                fetchMovies(sortByHighestRated);
+                movieAdapter.setMovieList(movieList);
+                movieAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.sort_by_favourites:
+                MovieDbHelper dbHelper = new MovieDbHelper(this);
+                db = dbHelper.getWritableDatabase();
+                Cursor cursor = getAllMovies();
+                //todo display fav movies
+                List<MovieObject> favouriteMoviesFromDB = parseMoviesFromCursor(cursor);
+                movieAdapter.setMovieList(favouriteMoviesFromDB);
+                movieAdapter.notifyDataSetChanged();
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private Cursor getAllMovies() {
+        return db.query(MovieContract.MovieEntry.TABLE_NAME, null, null, null, null, null, MovieContract.MovieEntry.COLUMN_NAME_TITLE);
+    }
+
+    private void fetchMovies(String sortby) {
         final Call movieListCall = mRestClient.getMovieService().getMovies(sortby, THE_MOVIE_DB_API_KEY);
         movieListCall.enqueue(new Callback<List<MovieObject>>() {
             @Override

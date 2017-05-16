@@ -10,8 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Anna Morgiel on 15.05.2017.
  */
 
-public class ReviewObject implements Parcelable
-{
+public class ReviewObject implements Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -44,8 +43,7 @@ public class ReviewObject implements Parcelable
             return (new ReviewObject[size]);
         }
 
-    }
-            ;
+    };
 
     public String getId() {
         return id;

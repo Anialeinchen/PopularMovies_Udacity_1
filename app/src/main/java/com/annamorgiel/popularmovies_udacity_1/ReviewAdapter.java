@@ -20,7 +20,7 @@ import static android.R.attr.key;
  * Created by Anna Morgiel on 15.05.2017.
  */
 
-public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>{
+public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
 
     private static final String TAG = ReviewAdapter.class.getSimpleName();
 
@@ -31,10 +31,12 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     public ReviewAdapter(View.OnClickListener mOnClickListener) {
         this.mOnClickListener = mOnClickListener;
     }
+
     public void setReviewList(List<ReviewObject> reviews) {
         reviewList = reviews;
         notifyDataSetChanged();
     }
+
     @Override
     public ReviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -47,6 +49,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
         return holder;
     }
+
     @Override
     public void onBindViewHolder(final ReviewViewHolder holder, int position) {
 
@@ -54,6 +57,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         holder.content_tv.setText(reviewList.get(position).getContent());
         holder.url_tv.setText(reviewList.get(position).getUrl());
     }
+
     @Override
     public int getItemCount() {
         return reviewList.size();
@@ -76,7 +80,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         public void onClick(View view) {
             Integer adapterPosition = getAdapterPosition();
             String url = reviewList.get(adapterPosition).getUrl();
-            view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url+key)));
+            view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url + key)));
         }
     }
 

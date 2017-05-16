@@ -13,8 +13,19 @@ import java.util.List;
  * Created by Anna Morgiel on 23.04.2017.
  */
 
-public class MovieObject implements Parcelable{
+public class MovieObject implements Parcelable {
 
+    public static final Creator<MovieObject> CREATOR = new Creator<MovieObject>() {
+        @Override
+        public MovieObject createFromParcel(Parcel in) {
+            return new MovieObject(in);
+        }
+
+        @Override
+        public MovieObject[] newArray(int size) {
+            return new MovieObject[size];
+        }
+    };
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
@@ -29,7 +40,7 @@ public class MovieObject implements Parcelable{
     private String releaseDate;
     @SerializedName("genre_ids")
     @Expose
-    private List<Integer> genreIds =  new ArrayList<Integer>();
+    private List<Integer> genreIds = new ArrayList<Integer>();
     @SerializedName("id")
     @Expose
     private Integer id;
@@ -61,6 +72,7 @@ public class MovieObject implements Parcelable{
     @Expose
     private Double voteAverage;
 
+
     protected MovieObject(Parcel in) {
         posterPath = in.readString();
         overview = in.readString();
@@ -70,8 +82,6 @@ public class MovieObject implements Parcelable{
         title = in.readString();
         backdropPath = in.readString();
     }
-
-
 
     //todo List<Integer> genreIds, out of constructor, because I didn't know ho to save it in a  database. Separate database?
     public MovieObject(String posterPath, Boolean adult, String overview,
@@ -95,18 +105,6 @@ public class MovieObject implements Parcelable{
         this.video = video;
         this.voteAverage = voteAverage;
     }
-
-    public static final Creator<MovieObject> CREATOR = new Creator<MovieObject>() {
-        @Override
-        public MovieObject createFromParcel(Parcel in) {
-            return new MovieObject(in);
-        }
-
-        @Override
-        public MovieObject[] newArray(int size) {
-            return new MovieObject[size];
-        }
-    };
 
     public String getPosterPath() {
         return posterPath;
@@ -171,6 +169,7 @@ public class MovieObject implements Parcelable{
     public void setOriginalLanguage(String originalLanguage) {
         this.originalLanguage = originalLanguage;
     }
+
     public Integer getRuntime() {
         return runtime;
     }

@@ -12,8 +12,7 @@ import java.util.List;
  * Created by Anna Morgiel on 15.05.2017.
  */
 
-public class ApiReviewResponse implements Parcelable
-{
+public class ApiReviewResponse implements Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -50,8 +49,7 @@ public class ApiReviewResponse implements Parcelable
             return (new ApiReviewResponse[size]);
         }
 
-    }
-            ;
+    };
 
     public Integer getId() {
         return id;

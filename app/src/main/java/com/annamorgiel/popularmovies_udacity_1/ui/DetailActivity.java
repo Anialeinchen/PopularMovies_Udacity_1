@@ -57,15 +57,25 @@ public class DetailActivity extends Activity {
     private ReviewAdapter reviewAdapter;
     private View.OnClickListener reviewListener;
     private List<ReviewObject> reviewList;
-    @BindView(R.id.detail_poster_iv) ImageView poster_detail;
-    @BindView(R.id.detail_movie_title) TextView title;
-    @BindView(R.id.detail_release_date_tv) TextView release_date;
-    @BindView(R.id.detail_movie_length_tv) TextView length;
-    @BindView(R.id.rdetail_anking_tv) TextView ranking;
-    @BindView(R.id.detail_movie_description) TextView desc;
-    @BindView(R.id.rv_videos) RecyclerView trailers_rv;
-    @BindView(R.id.rv_reviews) RecyclerView reviews_rv;
-    @BindView(R.id.detail_favorites_button) Button fav;;
+    @BindView(R.id.detail_poster_iv)
+    ImageView poster_detail;
+    @BindView(R.id.detail_movie_title)
+    TextView title;
+    @BindView(R.id.detail_release_date_tv)
+    TextView release_date;
+    @BindView(R.id.detail_movie_length_tv)
+    TextView length;
+    @BindView(R.id.rdetail_anking_tv)
+    TextView ranking;
+    @BindView(R.id.detail_movie_description)
+    TextView desc;
+    @BindView(R.id.rv_videos)
+    RecyclerView trailers_rv;
+    @BindView(R.id.rv_reviews)
+    RecyclerView reviews_rv;
+    @BindView(R.id.detail_favorites_button)
+    Button fav;
+    ;
     private static RestClient mRestClient = new RestClient();
 
 
@@ -102,13 +112,12 @@ public class DetailActivity extends Activity {
         fav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int status =(Integer) v.getTag();
-                if(status == 1) {
+                final int status = (Integer) v.getTag();
+                if (status == 1) {
                     addMovieToFavourites(movie);
                     fav.setText("remove movie from favorites");
                     v.setTag(0);
-                }
-                else{
+                } else {
                     removeMovieFromFavourites(movie.getId());
                     fav.setText("mark movie as favorite");
                     v.setTag(1);
@@ -121,7 +130,7 @@ public class DetailActivity extends Activity {
     //todo change signature like in fancymethod with View
     //todo MovieObject extends View? problems with the constructor requiring contect, attrs
     //todo add another column with booleand favourite in contract?
-    public void addMovieToFavourites(MovieObject movie){
+    public void addMovieToFavourites(MovieObject movie) {
         Toast.makeText(getApplicationContext(), "Yay! New favourite Movie!",
                 Toast.LENGTH_LONG).show();
         //ViewObject -> View
@@ -135,7 +144,7 @@ public class DetailActivity extends Activity {
         cv.put(MovieContract.MovieEntry.COLUMN_NAME_RUNTIME, movie.getRuntime());
         cv.put(MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_TITLE, movie.getTitle());
         cv.put(MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_LANGUAGE, movie.getOriginalLanguage());
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_TITLE,movie.getTitle());
+        cv.put(MovieContract.MovieEntry.COLUMN_NAME_TITLE, movie.getTitle());
         cv.put(MovieContract.MovieEntry.COLUMN_NAME_BACKDROP_PATH, movie.getBackdropPath());
         cv.put(MovieContract.MovieEntry.COLUMN_NAME_POPULARITY, movie.getPopularity());
         cv.put(MovieContract.MovieEntry.COLUMN_NAME_VOTE_COUNT, movie.getVoteCount());
@@ -146,9 +155,9 @@ public class DetailActivity extends Activity {
     }
 
 
-    private void fetchMovieDetails(Integer id){
+    private void fetchMovieDetails(Integer id) {
         final Call movieDetailCall = App.getRestClient().getMovieService().getMovieDetails(id, THE_MOVIE_DB_API_KEY);
-         movieDetailCall.enqueue(new Callback<MovieObject>() {
+        movieDetailCall.enqueue(new Callback<MovieObject>() {
             @Override
             public void onResponse(Call<MovieObject> call, Response<MovieObject> response) {
                 // get raw response
@@ -157,7 +166,7 @@ public class DetailActivity extends Activity {
                 title.setText(movie.getTitle());
                 release_date.setText(movie.getReleaseDate());
                 desc.setText(movie.getOverview());
-                length.setText(movie.getRuntime().toString()+" min");
+                length.setText(movie.getRuntime().toString() + " min");
                 ranking.setText(movie.getVoteAverage().toString());
                 Picasso.with(getApplicationContext())
                         .load(BASE_POSTER_URL + movie.getPosterPath())
@@ -174,7 +183,7 @@ public class DetailActivity extends Activity {
         });
     }
 
-    private void fetchVideos(Integer id){
+    private void fetchVideos(Integer id) {
         final Call videoCall = App.getRestClient().getMovieService().getVideos(id, THE_MOVIE_DB_API_KEY);
         videoCall.enqueue(new Callback<List<VideoObject>>() {
             @Override
@@ -193,7 +202,7 @@ public class DetailActivity extends Activity {
         });
     }
 
-    private void fetchReviews(Integer id){
+    private void fetchReviews(Integer id) {
         final Call videoCall = App.getRestClient().getMovieService().getReviews(id, THE_MOVIE_DB_API_KEY);
         videoCall.enqueue(new Callback<List<ReviewObject>>() {
             @Override
@@ -243,5 +252,5 @@ public class DetailActivity extends Activity {
 
         return db.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
     }*/
-    }
+}
 

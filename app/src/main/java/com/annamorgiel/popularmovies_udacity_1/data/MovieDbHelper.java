@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by Anna Morgiel on 04.05.2017.
  */
 
-public class MovieDbHelper extends SQLiteOpenHelper{
+public class MovieDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "waitlist.db";
     private static final int DATABASE_VERSION = 1;

@@ -19,7 +19,7 @@ import java.util.List;
  * Created by Anna Morgiel on 10.05.2017.
  */
 
-public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHolder>{
+public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHolder> {
 
     private static final String TAG = VideoAdapter.class.getSimpleName();
 
@@ -30,10 +30,12 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
     public VideoAdapter(View.OnClickListener mOnClickListener) {
         this.mOnClickListener = mOnClickListener;
     }
+
     public void setVideoList(List<VideoObject> videos) {
         videoList = videos;
         notifyDataSetChanged();
     }
+
     @Override
     public VideoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -46,6 +48,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
 
         return holder;
     }
+
     @Override
     public void onBindViewHolder(final VideoViewHolder holder, int position) {
         //todo - how to check if there are more trailers? are all being displayed
@@ -85,7 +88,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                     .appendQueryParameter("v", key);
             String myUrl = builder.build().toString();*/
 
-            view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url+key)));
+            view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url + key)));
         }
     }
 }
