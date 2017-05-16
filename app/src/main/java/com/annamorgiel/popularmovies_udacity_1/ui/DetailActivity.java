@@ -45,7 +45,6 @@ public class DetailActivity extends Activity {
 
     Long clickedItemId = null;
     Integer movieId = null;
-    private Button fav;
     String videoKey = null;
     private SQLiteDatabase db;
     String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185/";
@@ -54,6 +53,7 @@ public class DetailActivity extends Activity {
     private View.OnClickListener videoListener;
     private List<VideoObject> videoList;
 
+    private View.OnClickListener favButtonListener;
     private ReviewAdapter reviewAdapter;
     private View.OnClickListener reviewListener;
     private List<ReviewObject> reviewList;
@@ -65,6 +65,7 @@ public class DetailActivity extends Activity {
     @BindView(R.id.detail_movie_description) TextView desc;
     @BindView(R.id.rv_videos) RecyclerView trailers_rv;
     @BindView(R.id.rv_reviews) RecyclerView reviews_rv;
+    @BindView(R.id.detail_favorites_button) Button fav;;
     private static RestClient mRestClient = new RestClient();
 
 
@@ -95,6 +96,25 @@ public class DetailActivity extends Activity {
         reviews_rv.setAdapter(reviewAdapter);
         reviews_rv.setHasFixedSize(true);
         fetchReviews(movieId);
+        fav.setTag(1);
+        fav.setText("mark movie as favorite");
+        //todo we don't need onClick in XML Layout?
+        fav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final int status =(Integer) v.getTag();
+                if(status == 1) {
+                    addMovieToFavourites(movie);
+                    fav.setText("remove movie from favorites");
+                    v.setTag(0);
+                }
+                else{
+                    removeMovieFromFavourites(movie.getId());
+                    fav.setText("mark movie as favorite");
+                    v.setTag(1);
+                }
+            }
+        });
     }
     //todo discuss use of cursor -> return from a database
 
@@ -102,8 +122,6 @@ public class DetailActivity extends Activity {
     //todo MovieObject extends View? problems with the constructor requiring contect, attrs
     //todo add another column with booleand favourite in contract?
     public void addMovieToFavourites(MovieObject movie){
-        fav = (Button) findViewById(R.id.detail_favorites_button);
-
         Toast.makeText(getApplicationContext(), "Yay! New favourite Movie!",
                 Toast.LENGTH_LONG).show();
         //ViewObject -> View
@@ -195,7 +213,7 @@ public class DetailActivity extends Activity {
     }
 
     //todo implement onclick removefromfavourites (the button shuould have changed state)
-    private boolean removeMovieFromFavourites(long id) {
+    private boolean removeMovieFromFavourites(Integer id) {
         return db.delete(MovieContract.MovieEntry.TABLE_NAME, MovieContract.MovieEntry._ID + "=" + id, null) > 0;
     }
 

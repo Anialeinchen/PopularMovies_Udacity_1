@@ -2,7 +2,6 @@ package com.annamorgiel.popularmovies_udacity_1;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,11 +23,7 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
     private static final String TAG = MovieAdapter.class.getSimpleName();
-    private Cursor cursor;
-    private Context context;
-    private List<MovieObject> movieObjectList;
     private int movieCount;
-
     private List<MovieObject> movieList = new ArrayList<MovieObject>() {
     };
     private View.OnClickListener mOnClickListener;
@@ -36,19 +31,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public MovieAdapter(View.OnClickListener mOnClickListener, List<MovieObject> mList) {
         this.mOnClickListener = mOnClickListener;
         this.movieCount = movieList.size();
-        this.movieObjectList = mList;
-    }
-
-    public MovieAdapter(Context context, Cursor cursor, View.OnClickListener mOnClickListener){
-        this.mOnClickListener = mOnClickListener;
-        this.context = context;
-        this.cursor = cursor;
-        this.movieCount = cursor.getCount();
+        this.movieList = mList;
     }
 
 
     public void setMovieList(List<MovieObject> movies) {
-        movieList = movies;
+        this.movieList = movies;
+        this.movieCount = movieList.size();
         notifyDataSetChanged();
     }
 

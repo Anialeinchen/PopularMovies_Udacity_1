@@ -70,7 +70,10 @@ public class MovieObject implements Parcelable{
         title = in.readString();
         backdropPath = in.readString();
     }
-//todo List<Integer> genreIds, out of constructor, because I didn't know ho to save it in a  database. Separate database?
+
+
+
+    //todo List<Integer> genreIds, out of constructor, because I didn't know ho to save it in a  database. Separate database?
     public MovieObject(String posterPath, Boolean adult, String overview,
                        String releaseDate, Integer id,
                        Integer runtime, String originalTitle, String originalLanguage,

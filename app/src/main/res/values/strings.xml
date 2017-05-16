@@ -8,4 +8,5 @@
     <string name="sort_by_highest_rated">sort by highest rated</string>
     <string name="detail_activity">DetailActivity</string>
     <string name="sort_by_favourites">sort by favourites</string>
+    <string name="mark_as_nfavorite">mark as  favorite</string>
 </resources>
