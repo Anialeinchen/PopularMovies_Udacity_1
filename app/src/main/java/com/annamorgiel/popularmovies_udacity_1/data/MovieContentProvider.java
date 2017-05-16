@@ -28,7 +28,6 @@ public class MovieContentProvider extends ContentProvider {
         return null;
     }
 
-    //todo retrofit get raw response, get api resopnse?
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {

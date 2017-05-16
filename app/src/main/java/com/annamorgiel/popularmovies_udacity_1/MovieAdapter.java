@@ -26,15 +26,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private static final String TAG = MovieAdapter.class.getSimpleName();
     private Cursor cursor;
     private Context context;
+    private List<MovieObject> movieObjectList;
     private int movieCount;
 
     private List<MovieObject> movieList = new ArrayList<MovieObject>() {
     };
     private View.OnClickListener mOnClickListener;
 
-    public MovieAdapter(View.OnClickListener mOnClickListener) {
+    public MovieAdapter(View.OnClickListener mOnClickListener, List<MovieObject> mList) {
         this.mOnClickListener = mOnClickListener;
         this.movieCount = movieList.size();
+        this.movieObjectList = mList;
     }
 
     public MovieAdapter(Context context, Cursor cursor, View.OnClickListener mOnClickListener){
