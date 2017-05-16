@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity{
                 db = dbHelper.getWritableDatabase();
                 Cursor cursor = getAllMovies();
                 List<MovieObject> favouriteMoviesFromDB = parseMoviesFromCursor(cursor);
-                movieAdapter = new MovieAdapter(movieListener, favouriteMoviesFromDB);
+                movieAdapter.setMovieList(favouriteMoviesFromDB);
                 movieAdapter.notifyDataSetChanged();
                 return true;
 
