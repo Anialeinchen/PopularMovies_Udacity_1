@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -108,7 +109,6 @@ public class DetailActivity extends Activity {
         fetchReviews(movieId);
         fav.setTag(1);
         fav.setText("mark movie as favorite");
-        //todo we don't need onClick in XML Layout?
         fav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,8 +131,7 @@ public class DetailActivity extends Activity {
     //todo MovieObject extends View? problems with the constructor requiring contect, attrs
     //todo add another column with booleand favourite in contract?
     public void addMovieToFavourites(MovieObject movie) {
-        Toast.makeText(getApplicationContext(), "Yay! New favourite Movie!",
-                Toast.LENGTH_LONG).show();
+
         //ViewObject -> View
         //todo MovieObject extends  view?
 
@@ -151,7 +150,18 @@ public class DetailActivity extends Activity {
         cv.put(MovieContract.MovieEntry.COLUMN_NAME_VIDEO, movie.getVideo());
         cv.put(MovieContract.MovieEntry.COLUMN_NAME_VOTE_AVERAGE, movie.getVoteAverage());
 
-        db.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
+        Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, cv);
+
+        if(uri!=null){
+           //Toast.makeText(getBaseContext(), "Yay! New favourite Movie!",
+            Toast.makeText(getBaseContext(), uri.toString(),
+                    Toast.LENGTH_LONG).show();
+        }
+        //todo ??
+        finish();
+
+        //todo delete?
+        //db.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
     }
 
 

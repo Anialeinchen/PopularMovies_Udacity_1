@@ -1,5 +1,6 @@
 package com.annamorgiel.popularmovies_udacity_1.data;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 
@@ -14,12 +15,15 @@ public class MovieContract {
     private MovieContract() {
     }
 
-    public static final String AUTHORITY = "com.annamorgiel";
-
+    public static final String AUTHORITY = "com.annamorgiel.popularmovies_udacity_1";
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    public static final String PATH_FAVORITE_MOVIES  = "movies";
     //todo implement BASE_CONTENT_URI
     //Define the possible paths for accessing data in this contract
     /* Inner class that defines the table contents */
     public static class MovieEntry implements BaseColumns {
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAVORITE_MOVIES).build();
         //add rest
         //perhaps unnecessary
         public static final String TABLE_NAME = "movie";

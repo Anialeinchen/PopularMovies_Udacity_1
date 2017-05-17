@@ -24,7 +24,7 @@
 
         <provider
             android:name="com.annamorgiel.popularmovies_udacity_1.data.MovieContentProvider"
-            android:authorities="com.annamorgiel"
+            android:authorities="com.annamorgiel.popularmovies_udacity_1"
             android:exported="false"/>
 
     </application>
