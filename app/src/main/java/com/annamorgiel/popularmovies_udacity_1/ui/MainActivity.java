@@ -1,5 +1,6 @@
 package com.annamorgiel.popularmovies_udacity_1.ui;
 
+import android.content.Context;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -40,6 +41,8 @@ import static com.annamorgiel.popularmovies_udacity_1.BuildConfig.THE_MOVIE_DB_A
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static RestClient mRestClient = new RestClient();
+    private final Context mContext;
+    private Cursor mCursor;
     @BindView(R.id.rv_movies)
     RecyclerView poster_rv;
     private SQLiteDatabase db;
@@ -47,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private String sortByPopular = "popular";
     private String sortByHighestRated = "top_rated";
     private List<MovieObject> movieList;
+    private  List<MovieObject> favouriteMoviesFromDB;
     //todo: movieListener is never assigned?
     private View.OnClickListener movieListener;
 
@@ -79,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
                         cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_POPULARITY));
                 Integer voteCount = cursor.getInt(
                         cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_VOTE_COUNT));
-                //todo bool adult, video
                 Integer video = cursor.getInt(
                         cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_VIDEO));
                 Double voteAverage = cursor.getDouble(
@@ -94,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d(TAG, "Table is empty");
         }
-
         return movieObjects;
     }
 
@@ -148,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 db = dbHelper.getWritableDatabase();
                 Cursor cursor = getAllMovies();
                 //todo display fav movies
-                List<MovieObject> favouriteMoviesFromDB = parseMoviesFromCursor(cursor);
+                favouriteMoviesFromDB = parseMoviesFromCursor(cursor);
                 movieAdapter.setMovieList(favouriteMoviesFromDB);
                 movieAdapter.notifyDataSetChanged();
                 return true;
