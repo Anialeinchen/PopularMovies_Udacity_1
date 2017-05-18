@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import static android.R.attr.id;
+import static com.annamorgiel.popularmovies_udacity_1.data.MovieContract.MovieEntry.TABLE_NAME;
 
 /**
  * Created by Anna Morgiel on 08.05.2017.
@@ -37,7 +38,6 @@ public class MovieContentProvider extends ContentProvider {
     }
 
 
-
     @Override
     public boolean onCreate() {
         Context context = getContext();
@@ -48,14 +48,27 @@ public class MovieContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        return null;
+        final SQLiteDatabase db = movieDbHelper.getReadableDatabase();
+        int match = sUriMatcher.match(uri);
+        Cursor cursor;
+
+        switch (match) {
+            case MOVIES:
+                cursor = db.query(TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return cursor;
     }
 
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        return null;
+        throw new UnsupportedOperationException("Not yet implemented");
     }
+
 
     @Nullable
     @Override
@@ -66,7 +79,7 @@ public class MovieContentProvider extends ContentProvider {
 
         switch (match) {
             case MOVIES:
-                if ( id > 0 ) {
+                if (id > 0) {
                     returnUri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
@@ -84,13 +97,34 @@ public class MovieContentProvider extends ContentProvider {
         return returnUri;
     }
 
+    @Nullable
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        final SQLiteDatabase db = movieDbHelper.getWritableDatabase();
+        int match = sUriMatcher.match(uri);
+        int deletedMovie;
+        switch (match) {
+            // Handle the single item case, recognized by the ID included in the URI path
+            case MOVIE_ID:
+                // Get the task ID from the URI path
+                String id = uri.getPathSegments().get(1);
+                // Use selections/selectionArgs to filter for this ID
+                deletedMovie = db.delete(TABLE_NAME, "_id=?", new String[]{id});
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        if (deletedMovie != 0) {
+            // A task was deleted, set notification
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return deletedMovie;
     }
 
+    @Nullable
     @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+    public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String
+            selection, @Nullable String[] selectionArgs) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 }

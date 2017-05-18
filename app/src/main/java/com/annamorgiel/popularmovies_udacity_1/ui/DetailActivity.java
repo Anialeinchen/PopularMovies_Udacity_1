@@ -3,6 +3,7 @@ package com.annamorgiel.popularmovies_udacity_1.ui;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import com.annamorgiel.popularmovies_udacity_1.data.MovieContract;
 import com.annamorgiel.popularmovies_udacity_1.data.MovieDbHelper;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -76,7 +78,6 @@ public class DetailActivity extends Activity {
     RecyclerView reviews_rv;
     @BindView(R.id.detail_favorites_button)
     Button fav;
-    ;
     private static RestClient mRestClient = new RestClient();
 
 
@@ -229,6 +230,11 @@ public class DetailActivity extends Activity {
                         Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private List<MovieObject> retrieveMovieListFromACursor(Cursor cursor){
+        List<MovieObject> movieList = new ArrayList<>()
+        return movieList;
     }
 
     //todo implement onclick removefromfavourites (the button shuould have changed state)
