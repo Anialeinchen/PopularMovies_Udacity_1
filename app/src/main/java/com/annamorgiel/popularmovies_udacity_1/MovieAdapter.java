@@ -90,8 +90,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             Integer adapterPosition = getAdapterPosition();
             Integer movieIdInt = movieList.get(adapterPosition).getId();
             Intent intentToStartDetailActivity = new Intent(view.getContext(), destinationClass);
-            //done? delete string literals -> public static final
-            //create util class?
             intentToStartDetailActivity.putExtra(movieId, movieIdInt);
             view.getContext().startActivity(intentToStartDetailActivity);
         }

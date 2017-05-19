@@ -4,6 +4,7 @@ import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -26,7 +27,13 @@ public class MovieContentProvider extends ContentProvider {
 
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
-    //todo add - wher and what
+
+    public static class FavouriteMoviesCursorLoader extends CursorLoader {
+        //todo wrong second argument, required Uri found MovieContentProvider.MOVIES
+        public FavouriteMoviesCursorLoader(Context context) {
+            super(context, , null, null, null, null);
+        }
+    }
 
     public static UriMatcher buildUriMatcher() {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -85,15 +92,11 @@ public class MovieContentProvider extends ContentProvider {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
                 break;
-            // Default case throws an UnsupportedOperationException
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-
-        //Notify the resolver if the uri has been changed, and return the newly inserted URI
         getContext().getContentResolver().notifyChange(uri, null);
 
-        // Return constructed uri (this points to the newly inserted row of data)
         return returnUri;
     }
 
@@ -104,18 +107,14 @@ public class MovieContentProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         int deletedMovie;
         switch (match) {
-            // Handle the single item case, recognized by the ID included in the URI path
             case MOVIE_ID:
-                // Get the task ID from the URI path
                 String id = uri.getPathSegments().get(1);
-                // Use selections/selectionArgs to filter for this ID
                 deletedMovie = db.delete(TABLE_NAME, "_id=?", new String[]{id});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         if (deletedMovie != 0) {
-            // A task was deleted, set notification
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return deletedMovie;

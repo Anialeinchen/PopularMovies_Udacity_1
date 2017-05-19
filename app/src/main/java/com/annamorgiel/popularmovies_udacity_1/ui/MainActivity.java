@@ -1,10 +1,14 @@
 package com.annamorgiel.popularmovies_udacity_1.ui;
 
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.Loader;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +23,7 @@ import com.annamorgiel.popularmovies_udacity_1.R;
 import com.annamorgiel.popularmovies_udacity_1.Rest.RestClient;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.ApiResponse;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
+import com.annamorgiel.popularmovies_udacity_1.data.MovieContentProvider;
 import com.annamorgiel.popularmovies_udacity_1.data.MovieContract;
 import com.annamorgiel.popularmovies_udacity_1.data.MovieDbHelper;
 
@@ -38,19 +43,20 @@ import static com.annamorgiel.popularmovies_udacity_1.BuildConfig.THE_MOVIE_DB_A
  * Created by Anna Morgiel on 23.04.2017.
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "MainActivity";
     private static RestClient mRestClient = new RestClient();
     private final Context mContext;
+    private static final int FAVORITE_MOVIES_LOADER = 100;
     private Cursor mCursor;
     @BindView(R.id.rv_movies)
-    RecyclerView poster_rv;
+    private RecyclerView poster_rv;
     private SQLiteDatabase db;
     private MovieAdapter movieAdapter;
     private String sortByPopular = "popular";
     private String sortByHighestRated = "top_rated";
     private List<MovieObject> movieList;
-    private  List<MovieObject> favouriteMoviesFromDB;
+    private List<MovieObject> favouriteMoviesFromDB;
     //todo: movieListener is never assigned?
     private View.OnClickListener movieListener;
 
@@ -99,6 +105,28 @@ public class MainActivity extends AppCompatActivity {
         }
         return movieObjects;
     }
+
+    void swapCursor(Cursor newCursor) {
+        mCursor = newCursor;
+        //todo notifyDataSetChanged error: cannot resolve method
+        notifyDataSetChanged();
+    }
+
+    public static final String[] DMOVIE_DETAILS_PROJECTION = {
+            MovieContract.MovieEntry.COLUMN_NAME_POSTER_PATH,
+            MovieContract.MovieEntry.COLUMN_NAME_ADULT,
+            MovieContract.MovieEntry.COLUMN_NAME_OVERVIEW,
+            MovieContract.MovieEntry.COLUMN_NAME_RELEASE_DATE,
+            MovieContract.MovieEntry.COLUMN_NAME_RUNTIME,
+            MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_TITLE,
+            MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_LANGUAGE,
+            MovieContract.MovieEntry.COLUMN_NAME_TITLE,
+            MovieContract.MovieEntry.COLUMN_NAME_BACKDROP_PATH,
+            MovieContract.MovieEntry.COLUMN_NAME_POPULARITY,
+            MovieContract.MovieEntry.COLUMN_NAME_VOTE_COUNT,
+            MovieContract.MovieEntry.COLUMN_NAME_VIDEO,
+            MovieContract.MovieEntry.COLUMN_NAME_VOTE_AVERAGE
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,14 +196,12 @@ public class MainActivity extends AppCompatActivity {
         movieListCall.enqueue(new Callback<List<MovieObject>>() {
             @Override
             public void onResponse(Call<List<MovieObject>> call, Response<List<MovieObject>> response) {
-                // get raw response
                 ApiResponse movieResponse = (ApiResponse) response.body();
                 movieList = movieResponse.getMovieObjects();
                 movieAdapter.setMovieList(movieList);
                 movieAdapter.notifyDataSetChanged();
-                //movieList = response.body();
                 Log.d(TAG, "onResponse: size:" + movieList.size());
-                //movieAdapter.setMovieList(movieList);
+
             }
 
             @Override
@@ -184,6 +210,45 @@ public class MainActivity extends AppCompatActivity {
                         Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
+        Log.d(TAG, "onCreateLoader");
+        switch (loaderId){
+            Uri movieQueryUri = MovieContract.MovieEntry.CONTENT_URI;
+            String sortOrder = MovieContract.MovieEntry.COLUMN_NAME_POPULARITY + " ASC";
+            String selection = MovieContract.MovieEntry.
+//// TODO: 19.05.2017
+            return new CursorLoader(this,
+                    movieQueryUri,
+                    DMOVIE_DETAILS_PROJECTION,
+                    null,
+                    null,
+                    sortOrder);
+
+            default:
+                throw new RuntimeException("Loader Not Implemented: " + loaderId);
+        }
+        }
+        return new MovieContentProvider.FavouriteMoviesCursorLoader(this);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.d(TAG, "onLoadFinished");
+        //todo in londonbike app
+        //movieAdapter.changeCursor(data);
+        movieAdapter.swapCursor(data);
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        Log.d(TAG, "onLoaderReset");
+        //todo in londonbike app
+        // movieAdapter.changeCursor(null);
+        movieAdapter.swapCursor(null);
     }
 }
 

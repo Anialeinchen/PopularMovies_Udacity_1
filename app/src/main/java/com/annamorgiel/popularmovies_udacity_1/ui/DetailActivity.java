@@ -3,7 +3,6 @@ package com.annamorgiel.popularmovies_udacity_1.ui;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,7 +28,6 @@ import com.annamorgiel.popularmovies_udacity_1.data.MovieContract;
 import com.annamorgiel.popularmovies_udacity_1.data.MovieDbHelper;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -46,12 +44,10 @@ import static com.annamorgiel.popularmovies_udacity_1.BuildConfig.THE_MOVIE_DB_A
 
 public class DetailActivity extends Activity {
 
-    Long clickedItemId = null;
-    Integer movieId = null;
-    String videoKey = null;
+    private Integer movieId = null;
     private SQLiteDatabase db;
-    String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185/";
-    MovieObject movie;
+    private String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185/";
+    private MovieObject movie;
     private VideoAdapter videoAdapter;
     private View.OnClickListener videoListener;
     private List<VideoObject> videoList;
@@ -60,6 +56,7 @@ public class DetailActivity extends Activity {
     private ReviewAdapter reviewAdapter;
     private View.OnClickListener reviewListener;
     private List<ReviewObject> reviewList;
+
     @BindView(R.id.detail_poster_iv)
     ImageView poster_detail;
     @BindView(R.id.detail_movie_title)
@@ -126,15 +123,8 @@ public class DetailActivity extends Activity {
             }
         });
     }
-    //todo discuss use of cursor -> return from a database
 
-    //todo change signature like in fancymethod with View
-    //todo MovieObject extends View? problems with the constructor requiring contect, attrs
-    //todo add another column with booleand favourite in contract?
     public void addMovieToFavourites(MovieObject movie) {
-
-        //ViewObject -> View
-        //todo MovieObject extends  view?
 
         ContentValues cv = new ContentValues();
         cv.put(MovieContract.MovieEntry.COLUMN_NAME_POSTER_PATH, movie.getPosterPath());
@@ -153,8 +143,8 @@ public class DetailActivity extends Activity {
 
         Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, cv);
 
-        if(uri!=null){
-           //Toast.makeText(getBaseContext(), "Yay! New favourite Movie!",
+        if (uri != null) {
+            //Toast.makeText(getBaseContext(), "Yay! New favourite Movie!",
             Toast.makeText(getBaseContext(), uri.toString(),
                     Toast.LENGTH_LONG).show();
         }
@@ -232,16 +222,9 @@ public class DetailActivity extends Activity {
         });
     }
 
-    private List<MovieObject> retrieveMovieListFromACursor(Cursor cursor){
-        List<MovieObject> movieList = new ArrayList<>()
-        return movieList;
-    }
-
-    //todo implement onclick removefromfavourites (the button shuould have changed state)
     private boolean removeMovieFromFavourites(Integer id) {
         return db.delete(MovieContract.MovieEntry.TABLE_NAME, MovieContract.MovieEntry._ID + "=" + id, null) > 0;
     }
-
 
     /*private long addNewFavouriteMovie(String posterPath, Boolean adult, String overview, String releaseDate, Integer runtime, String originalTitle,
                                       String originalLanguage, String title, String backdropPath, Double popularity, Integer voteCount,
