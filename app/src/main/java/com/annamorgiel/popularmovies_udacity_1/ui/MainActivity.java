@@ -1,14 +1,8 @@
 package com.annamorgiel.popularmovies_udacity_1.ui;
 
-import android.app.LoaderManager;
 import android.content.Context;
-import android.content.Loader;
 import android.content.res.Configuration;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,16 +16,16 @@ import com.annamorgiel.popularmovies_udacity_1.MovieAdapter;
 import com.annamorgiel.popularmovies_udacity_1.R;
 import com.annamorgiel.popularmovies_udacity_1.Rest.RestClient;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.ApiResponse;
+import com.annamorgiel.popularmovies_udacity_1.Rest.model.FavoritesItem;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
-import com.annamorgiel.popularmovies_udacity_1.data.MovieContentProvider;
-import com.annamorgiel.popularmovies_udacity_1.data.MovieContract;
-import com.annamorgiel.popularmovies_udacity_1.data.MovieDbHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,111 +35,61 @@ import static com.annamorgiel.popularmovies_udacity_1.BuildConfig.THE_MOVIE_DB_A
 
 /**
  * Created by Anna Morgiel on 23.04.2017.
+ * Displays movie grid. Sort by popular, top rated or favourite movies.
+ * Popular and top rated will be realised via retrofit and favorites retrieved from a db.
  */
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends AppCompatActivity {
+
     private static final String TAG = "MainActivity";
-    private static RestClient mRestClient = new RestClient();
-    private final Context mContext;
-    private static final int FAVORITE_MOVIES_LOADER = 100;
-    private Cursor mCursor;
-    @BindView(R.id.rv_movies)
-    private RecyclerView poster_rv;
-    private SQLiteDatabase db;
+    public static RestClient mRestClient = new RestClient();
+
     private MovieAdapter movieAdapter;
-    private String sortByPopular = "popular";
-    private String sortByHighestRated = "top_rated";
     private List<MovieObject> movieList;
-    private List<MovieObject> favouriteMoviesFromDB;
-    //todo: movieListener is never assigned?
     private View.OnClickListener movieListener;
 
-    public static List<MovieObject> parseMoviesFromCursor(Cursor cursor) {
-        List<MovieObject> movieObjects = new ArrayList<>();
-        if (cursor.moveToFirst()) {
-            do {
-                String posterPath = cursor.getString(
-                        cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_POSTER_PATH));
-                Integer adult = cursor.getInt(
-                        cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_ADULT));
-                String overview = cursor.getString(
-                        cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_OVERVIEW));
-                String releaseDate = cursor.getString(
-                        cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_RELEASE_DATE));
-                //todo gendre IDs?
-                Integer id = cursor.getInt(
-                        cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_ID));
-                Integer runtime = cursor.getInt(
-                        cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_RUNTIME));
-                String originalTitle = cursor.getString(
-                        cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_TITLE));
-                String originalLanguage = cursor.getString(
-                        cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_LANGUAGE));
-                String title = cursor.getString(
-                        cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_TITLE));
-                String backdropPath = cursor.getString(
-                        cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_BACKDROP_PATH));
-                Double popularity = cursor.getDouble(
-                        cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_POPULARITY));
-                Integer voteCount = cursor.getInt(
-                        cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_VOTE_COUNT));
-                Integer video = cursor.getInt(
-                        cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_VIDEO));
-                Double voteAverage = cursor.getDouble(
-                        cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_VOTE_AVERAGE));
-                Boolean adult_boolean = (adult != 0);
+    private String sortByPopular = "popular";
+    private String sortByHighestRated = "top_rated";
+    //realmComponents 1
+    private Realm realmInstance;
+    private Context mContext;
 
-                Boolean video_boolean = (video != 0);
-
-                movieObjects.add(new MovieObject(posterPath, adult_boolean, overview, releaseDate, id, runtime, originalTitle, originalLanguage,
-                        title, backdropPath, popularity, voteCount, video_boolean, voteAverage));
-            } while (cursor.moveToNext());
-        } else {
-            Log.d(TAG, "Table is empty");
-        }
-        return movieObjects;
-    }
-
-    void swapCursor(Cursor newCursor) {
-        mCursor = newCursor;
-        //todo notifyDataSetChanged error: cannot resolve method
-        notifyDataSetChanged();
-    }
-
-    public static final String[] DMOVIE_DETAILS_PROJECTION = {
-            MovieContract.MovieEntry.COLUMN_NAME_POSTER_PATH,
-            MovieContract.MovieEntry.COLUMN_NAME_ADULT,
-            MovieContract.MovieEntry.COLUMN_NAME_OVERVIEW,
-            MovieContract.MovieEntry.COLUMN_NAME_RELEASE_DATE,
-            MovieContract.MovieEntry.COLUMN_NAME_RUNTIME,
-            MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_TITLE,
-            MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_LANGUAGE,
-            MovieContract.MovieEntry.COLUMN_NAME_TITLE,
-            MovieContract.MovieEntry.COLUMN_NAME_BACKDROP_PATH,
-            MovieContract.MovieEntry.COLUMN_NAME_POPULARITY,
-            MovieContract.MovieEntry.COLUMN_NAME_VOTE_COUNT,
-            MovieContract.MovieEntry.COLUMN_NAME_VIDEO,
-            MovieContract.MovieEntry.COLUMN_NAME_VOTE_AVERAGE
-    };
+    @BindView(R.id.rv_movies)
+    public RecyclerView poster_rv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        //realmComponents 2
+        initRealm();
+        mContext = this;
         mRestClient.getMovieService();
-
+        //adjust the layout depending on the orientation
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             poster_rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
         } else {
             poster_rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
         }
+        //perform a network request
         fetchMovies(sortByPopular);
-        movieAdapter = new MovieAdapter(movieListener, movieList);
+
+        movieListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        };
+
+        movieAdapter = new MovieAdapter(movieListener);
         poster_rv.setAdapter(movieAdapter);
         poster_rv.setHasFixedSize(true);
+    }
 
-
+    //realmComponents 3
+    private void initRealm() {
+        Realm.init(this);
+        realmInstance = Realm.getDefaultInstance();
     }
 
     @Override
@@ -157,9 +101,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         switch (id) {
             case R.id.sort_by_popularity:
@@ -174,21 +115,28 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 movieAdapter.notifyDataSetChanged();
                 return true;
             case R.id.sort_by_favourites:
-                MovieDbHelper dbHelper = new MovieDbHelper(this);
-                db = dbHelper.getWritableDatabase();
-                Cursor cursor = getAllMovies();
-                //todo display fav movies
-                favouriteMoviesFromDB = parseMoviesFromCursor(cursor);
-                movieAdapter.setMovieList(favouriteMoviesFromDB);
-                movieAdapter.notifyDataSetChanged();
+                List<MovieObject> list = getFavoriteMoviesList();
+                movieAdapter.setMovieList(list);
                 return true;
 
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private Cursor getAllMovies() {
-        return db.query(MovieContract.MovieEntry.TABLE_NAME, null, null, null, null, null, MovieContract.MovieEntry.COLUMN_NAME_TITLE);
+    private List<MovieObject> getFavoriteMoviesList() {
+        List<MovieObject> list = new ArrayList<>();
+//realmComponents 4
+        final RealmResults<FavoritesItem> allFavoriteIds = realmInstance.where(FavoritesItem.class).findAll();
+        final List<MovieObject> movieList = movieAdapter.getMovieList();
+
+        for (FavoritesItem favItem : allFavoriteIds) {
+            for (MovieObject movie : movieList) {
+                if (favItem.getMovieId().equals(movie.getId())) {
+                    list.add(movie);
+                }
+            }
+        }
+        return list;
     }
 
     private void fetchMovies(String sortby) {
@@ -211,89 +159,4 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         });
     }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
-        Log.d(TAG, "onCreateLoader");
-        switch (loaderId){
-            Uri movieQueryUri = MovieContract.MovieEntry.CONTENT_URI;
-            String sortOrder = MovieContract.MovieEntry.COLUMN_NAME_POPULARITY + " ASC";
-            String selection = MovieContract.MovieEntry.
-//// TODO: 19.05.2017
-            return new CursorLoader(this,
-                    movieQueryUri,
-                    DMOVIE_DETAILS_PROJECTION,
-                    null,
-                    null,
-                    sortOrder);
-
-            default:
-                throw new RuntimeException("Loader Not Implemented: " + loaderId);
-        }
-        }
-        return new MovieContentProvider.FavouriteMoviesCursorLoader(this);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d(TAG, "onLoadFinished");
-        //todo in londonbike app
-        //movieAdapter.changeCursor(data);
-        movieAdapter.swapCursor(data);
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        Log.d(TAG, "onLoaderReset");
-        //todo in londonbike app
-        // movieAdapter.changeCursor(null);
-        movieAdapter.swapCursor(null);
-    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

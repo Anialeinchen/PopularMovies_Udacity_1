@@ -15,17 +15,6 @@ import java.util.List;
 
 public class MovieObject implements Parcelable {
 
-    public static final Creator<MovieObject> CREATOR = new Creator<MovieObject>() {
-        @Override
-        public MovieObject createFromParcel(Parcel in) {
-            return new MovieObject(in);
-        }
-
-        @Override
-        public MovieObject[] newArray(int size) {
-            return new MovieObject[size];
-        }
-    };
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
@@ -72,6 +61,18 @@ public class MovieObject implements Parcelable {
     @Expose
     private Double voteAverage;
 
+    public static final Creator<MovieObject> CREATOR = new Creator<MovieObject>() {
+        @Override
+        public MovieObject createFromParcel(Parcel in) {
+            return new MovieObject(in);
+        }
+
+        @Override
+        public MovieObject[] newArray(int size) {
+            return new MovieObject[size];
+        }
+    };
+
 
     protected MovieObject(Parcel in) {
         posterPath = in.readString();
@@ -81,29 +82,6 @@ public class MovieObject implements Parcelable {
         originalLanguage = in.readString();
         title = in.readString();
         backdropPath = in.readString();
-    }
-
-    //todo List<Integer> genreIds, out of constructor, because I didn't know ho to save it in a  database. Separate database?
-    public MovieObject(String posterPath, Boolean adult, String overview,
-                       String releaseDate, Integer id,
-                       Integer runtime, String originalTitle, String originalLanguage,
-                       String title, String backdropPath, Double popularity,
-                       Integer voteCount, Boolean video, Double voteAverage) {
-        this.posterPath = posterPath;
-        this.adult = adult;
-        this.overview = overview;
-        this.releaseDate = releaseDate;
-        this.genreIds = genreIds;
-        this.id = id;
-        this.runtime = runtime;
-        this.originalTitle = originalTitle;
-        this.originalLanguage = originalLanguage;
-        this.title = title;
-        this.backdropPath = backdropPath;
-        this.popularity = popularity;
-        this.voteCount = voteCount;
-        this.video = video;
-        this.voteAverage = voteAverage;
     }
 
     public String getPosterPath() {

@@ -16,9 +16,6 @@ import retrofit2.http.Query;
 
 public interface MovieService {
 
-    //No Callback as third parameter because we use retrofit 2
-    //we get the list of movies
-
     /**
      * @param sortby [popular] [new movies] replaces static parameter in network request
      * @param apiKey is for dynamic parameters, queries the result with =? apiKey

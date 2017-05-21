@@ -26,14 +26,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private int movieCount;
     private List<MovieObject> movieList = new ArrayList<MovieObject>() {
     };
-    private View.OnClickListener mOnClickListener;
+    public View.OnClickListener mOnClickListener;
 
-    public MovieAdapter(View.OnClickListener mOnClickListener, List<MovieObject> mList) {
+    public MovieAdapter(View.OnClickListener mOnClickListener) {
         this.mOnClickListener = mOnClickListener;
         this.movieCount = movieList.size();
-        this.movieList = mList;
     }
-
 
     public void setMovieList(List<MovieObject> movies) {
         this.movieList = movies;
@@ -41,8 +39,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         notifyDataSetChanged();
     }
 
+    public List<MovieObject> getMovieList() {
+        return movieList;
+    }
+
     @Override
-    public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MovieAdapter.MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         int layoutIdForGridItem = R.layout.grid_item_view;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -73,7 +75,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public int getItemCount() {
         return movieCount;
     }
-
 
     class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final ImageView posterImageView;

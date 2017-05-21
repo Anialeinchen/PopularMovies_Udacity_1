@@ -17,6 +17,8 @@ import java.util.List;
 
 /**
  * Created by Anna Morgiel on 10.05.2017.
+ * Adapter as a list of trailers. Displays the play icon, the trailer number.
+ * At onClick the YouTube or WebBrowser will be launched.
  */
 
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHolder> {
@@ -76,14 +78,6 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
             Integer adapterPosition = getAdapterPosition();
             String key = videoList.get(adapterPosition).getKey();
             String url = "https://www.youtube.com/watch?v=";
-
-            /*Uri.Builder builder = new Uri.Builder();
-            builder.scheme("https")
-                    .authority("www.youtube.com")
-                    .appendPath("watch")
-                    .appendQueryParameter("v", key);
-            String myUrl = builder.build().toString();*/
-
             view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url + key)));
         }
     }

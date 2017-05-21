@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ApiResponse implements Parcelable {
-    //changed total_movies to total results and also movies to results
-    //giuhi
+
     @SerializedName("page")
     @Expose
     private Integer page;

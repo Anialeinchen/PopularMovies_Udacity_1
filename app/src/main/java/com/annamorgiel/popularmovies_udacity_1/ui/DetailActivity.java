@@ -1,10 +1,7 @@
 package com.annamorgiel.popularmovies_udacity_1.ui;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,23 +12,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.annamorgiel.popularmovies_udacity_1.R;
-import com.annamorgiel.popularmovies_udacity_1.Rest.RestClient;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.ApiReviewResponse;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.ApiVideoResponse;
+import com.annamorgiel.popularmovies_udacity_1.Rest.model.FavoritesItem;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.ReviewObject;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.VideoObject;
 import com.annamorgiel.popularmovies_udacity_1.ReviewAdapter;
 import com.annamorgiel.popularmovies_udacity_1.VideoAdapter;
 import com.annamorgiel.popularmovies_udacity_1.app.App;
-import com.annamorgiel.popularmovies_udacity_1.data.MovieContract;
-import com.annamorgiel.popularmovies_udacity_1.data.MovieDbHelper;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,64 +36,77 @@ import static com.annamorgiel.popularmovies_udacity_1.BuildConfig.THE_MOVIE_DB_A
 
 /**
  * Created by Anna Morgiel on 23.04.2017.
+ * <p>
+ * we fetch the intent with a movie id in order to display the movie details.
+ * Retrofit performs a network request and fetches the reviews, trailers and movie details.
+ * The Button allows us to save a movie into a local db.
+ * Clicking on the trailer field opens YouTube or a web browser with the trailer content.
  */
 
 public class DetailActivity extends Activity {
 
-    private Integer movieId = null;
-    private SQLiteDatabase db;
-    private String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185/";
-    private MovieObject movie;
-    private VideoAdapter videoAdapter;
-    private View.OnClickListener videoListener;
-    private List<VideoObject> videoList;
-
-    private View.OnClickListener favButtonListener;
-    private ReviewAdapter reviewAdapter;
-    private View.OnClickListener reviewListener;
-    private List<ReviewObject> reviewList;
+    public static final int TAG_MOVIE_ADDED_TO_FAV = 0;
+    public static final int TAG_MOVIE_REMOVED_FROM_FAVORITES = 1;
 
     @BindView(R.id.detail_poster_iv)
-    ImageView poster_detail;
+    ImageView posterDetail;
     @BindView(R.id.detail_movie_title)
     TextView title;
     @BindView(R.id.detail_release_date_tv)
-    TextView release_date;
+    TextView releaseDate;
     @BindView(R.id.detail_movie_length_tv)
     TextView length;
-    @BindView(R.id.rdetail_anking_tv)
+    @BindView(R.id.detail_ranking_tv)
     TextView ranking;
     @BindView(R.id.detail_movie_description)
     TextView desc;
     @BindView(R.id.rv_videos)
-    RecyclerView trailers_rv;
+    RecyclerView videos_rv;
     @BindView(R.id.rv_reviews)
     RecyclerView reviews_rv;
     @BindView(R.id.detail_favorites_button)
-    Button fav;
-    private static RestClient mRestClient = new RestClient();
+    Button addMovieToFavourites;
 
+    private View.OnClickListener favButtonListener;
+    private MovieObject movie;
+    private Integer movieId = null;
+    private String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185/";
+    private String posterPath;
+    private VideoAdapter videoAdapter;
+    private List<VideoObject> videoList;
+    private View.OnClickListener videoListener;
+    private List<ReviewObject> reviewList;
+    private ReviewAdapter reviewAdapter;
+    private View.OnClickListener reviewListener;
+    //realmComponents 5
+    private Realm realmInstance;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        //butterknife bindviews
         ButterKnife.bind(this);
-        mRestClient.getMovieService();
+        //realmComponents 6
+        initRealm();
+
+        //fetch id of a movie to display it's details, default id = 0
         Intent intentThatStartedThisActivity = getIntent();
         if (intentThatStartedThisActivity.hasExtra("movieId")) {
-            movieId = intentThatStartedThisActivity.getIntExtra("movieId", 22);
+            movieId = intentThatStartedThisActivity.getIntExtra("movieId", 0);
         }
         fetchMovieDetails(movieId);
+        initViews();
+    }
 
-        MovieDbHelper dbHelper = new MovieDbHelper(this);
-        db = dbHelper.getWritableDatabase();
-
-
-        trailers_rv.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+    /**
+     * set the video adapter, set the reviews , pollute both with data
+     */
+    private void initViews() {
+        videos_rv.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         videoAdapter = new VideoAdapter(videoListener);
-        trailers_rv.setAdapter(videoAdapter);
-        trailers_rv.setHasFixedSize(true);
+        videos_rv.setAdapter(videoAdapter);
+        videos_rv.setHasFixedSize(true);
         fetchVideos(movieId);
 
         reviews_rv.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -105,57 +114,77 @@ public class DetailActivity extends Activity {
         reviews_rv.setAdapter(reviewAdapter);
         reviews_rv.setHasFixedSize(true);
         fetchReviews(movieId);
-        fav.setTag(1);
-        fav.setText("mark movie as favorite");
-        fav.setOnClickListener(new View.OnClickListener() {
+
+        addMovieToFavourites.setTag(1);
+        addMovieToFavourites.setText("mark movie as favorite");
+        addMovieToFavourites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final int status = (Integer) v.getTag();
                 if (status == 1) {
-                    addMovieToFavourites(movie);
-                    fav.setText("remove movie from favorites");
-                    v.setTag(0);
+                    addMovieToFavourites();
+                    movieAddedToFavorites();
                 } else {
-                    removeMovieFromFavourites(movie.getId());
-                    fav.setText("mark movie as favorite");
-                    v.setTag(1);
+                    removeMovieFromFavourites();
+                    movieNotAddedToFavorites();
                 }
             }
         });
     }
 
-    public void addMovieToFavourites(MovieObject movie) {
-
-        ContentValues cv = new ContentValues();
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_POSTER_PATH, movie.getPosterPath());
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_ADULT, movie.getAdult());
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_OVERVIEW, movie.getOverview());
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_RELEASE_DATE, movie.getReleaseDate());
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_RUNTIME, movie.getRuntime());
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_TITLE, movie.getTitle());
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_LANGUAGE, movie.getOriginalLanguage());
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_TITLE, movie.getTitle());
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_BACKDROP_PATH, movie.getBackdropPath());
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_POPULARITY, movie.getPopularity());
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_VOTE_COUNT, movie.getVoteCount());
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_VIDEO, movie.getVideo());
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_VOTE_AVERAGE, movie.getVoteAverage());
-
-        Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, cv);
-
-        if (uri != null) {
-            //Toast.makeText(getBaseContext(), "Yay! New favourite Movie!",
-            Toast.makeText(getBaseContext(), uri.toString(),
-                    Toast.LENGTH_LONG).show();
-        }
-        //todo ??
-        finish();
-
-        //todo delete?
-        //db.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
+    private void movieNotAddedToFavorites() {
+        addMovieToFavourites.setText("mark movie as favorite");
+        addMovieToFavourites.setTag(TAG_MOVIE_REMOVED_FROM_FAVORITES);
     }
 
+    private void movieAddedToFavorites() {
+        addMovieToFavourites.setText("remove movie from favorites");
+        addMovieToFavourites.setTag(TAG_MOVIE_ADDED_TO_FAV);
+    }
 
+    private void initRealm() {
+        Realm.init(this);
+        realmInstance = Realm.getDefaultInstance();
+    }
+
+    public void addMovieToFavourites() {
+        final FavoritesItem favoritesItem = new FavoritesItem();
+        favoritesItem.setMovieId(movieId);
+        //realmComponents 7
+        realmInstance.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realmInstance.copyToRealmOrUpdate(favoritesItem);
+            }
+        });
+        //realmComponents 8
+        realmInstance.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.where(FavoritesItem.class).findAll();
+            }
+        });
+    }
+
+    private void checkIfAddedToFavorites() {
+        //realmComponents 9
+        final FavoritesItem movieId = realmInstance.where(FavoritesItem.class)
+                .equalTo("movieId", this.movieId)
+                .findFirst();
+
+        if (movieId != null && movieId.getMovieId() != null) {
+            movieAddedToFavorites();
+        } else {
+            movieNotAddedToFavorites();
+        }
+    }
+
+    /**
+     *
+     * @param id is crucial for the network request.
+     * we set the movie details, Picasso loads movie posters, displaying a round loading icon while loading
+     * or error icon if there is no internet connection
+     */
     private void fetchMovieDetails(Integer id) {
         final Call movieDetailCall = App.getRestClient().getMovieService().getMovieDetails(id, THE_MOVIE_DB_API_KEY);
         movieDetailCall.enqueue(new Callback<MovieObject>() {
@@ -165,15 +194,19 @@ public class DetailActivity extends Activity {
 
                 movie = response.body();
                 title.setText(movie.getTitle());
-                release_date.setText(movie.getReleaseDate());
+                releaseDate.setText(movie.getReleaseDate());
                 desc.setText(movie.getOverview());
                 length.setText(movie.getRuntime().toString() + " min");
                 ranking.setText(movie.getVoteAverage().toString());
+                posterPath = movie.getPosterPath();
+
                 Picasso.with(getApplicationContext())
-                        .load(BASE_POSTER_URL + movie.getPosterPath())
+                        .load(BASE_POSTER_URL + posterPath)
                         .placeholder(R.drawable.loading_poster)
                         .error(R.drawable.ic_alert_circle)
-                        .into(poster_detail);
+                        .into(posterDetail);
+
+                checkIfAddedToFavorites();
             }
 
             @Override
@@ -184,6 +217,10 @@ public class DetailActivity extends Activity {
         });
     }
 
+    /**
+     * fetch trailer links
+     * @param id from a movie
+     */
     private void fetchVideos(Integer id) {
         final Call videoCall = App.getRestClient().getMovieService().getVideos(id, THE_MOVIE_DB_API_KEY);
         videoCall.enqueue(new Callback<List<VideoObject>>() {
@@ -203,6 +240,10 @@ public class DetailActivity extends Activity {
         });
     }
 
+    /**
+     *
+     * @param id for revies of a movie with this id
+     */
     private void fetchReviews(Integer id) {
         final Call videoCall = App.getRestClient().getMovieService().getReviews(id, THE_MOVIE_DB_API_KEY);
         videoCall.enqueue(new Callback<List<ReviewObject>>() {
@@ -222,34 +263,14 @@ public class DetailActivity extends Activity {
         });
     }
 
-    private boolean removeMovieFromFavourites(Integer id) {
-        return db.delete(MovieContract.MovieEntry.TABLE_NAME, MovieContract.MovieEntry._ID + "=" + id, null) > 0;
+    private void removeMovieFromFavourites() {
+        final FavoritesItem favoritesItem = realmInstance.where(FavoritesItem.class).equalTo("movieId", this.movieId).findFirst();
+        realmInstance.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                favoritesItem.deleteFromRealm();
+            }
+        });
     }
-
-    /*private long addNewFavouriteMovie(String posterPath, Boolean adult, String overview, String releaseDate, Integer runtime, String originalTitle,
-                                      String originalLanguage, String title, String backdropPath, Double popularity, Integer voteCount,
-                                      Boolean video, Double voteAverage){
-        fav = (Button) findViewById(R.id.detail_favorites_button);
-
-        Toast.makeText(getApplicationContext(), "Yay! New favourite Movie!",
-                Toast.LENGTH_LONG).show();
-
-        ContentValues cv = new ContentValues();
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_POSTER_PATH, posterPath);
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_ADULT, adult);
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_OVERVIEW, overview);
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_RELEASE_DATE, releaseDate);
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_RUNTIME, runtime);
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_TITLE, originalTitle);
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_LANGUAGE, originalLanguage);
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_TITLE,title);
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_BACKDROP_PATH, backdropPath);
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_POPULARITY, popularity);
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_VOTE_COUNT, voteCount);
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_VIDEO, video);
-        cv.put(MovieContract.MovieEntry.COLUMN_NAME_VOTE_AVERAGE, voteAverage);
-
-        return db.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
-    }*/
 }
 

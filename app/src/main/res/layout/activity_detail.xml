@@ -67,7 +67,7 @@
                     android:textStyle="italic" />
 
                 <TextView
-                    android:id="@+id/rdetail_anking_tv"
+                    android:id="@+id/detail_ranking_tv"
                     android:layout_width="wrap_content"
                     android:fontFamily="sans-serif-light"
                     android:layout_height="wrap_content"
