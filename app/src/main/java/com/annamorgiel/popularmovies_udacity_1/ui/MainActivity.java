@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,7 +22,6 @@ import com.annamorgiel.popularmovies_udacity_1.R;
 import com.annamorgiel.popularmovies_udacity_1.Rest.RestClient;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.ApiResponse;
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
-import com.annamorgiel.popularmovies_udacity_1.data.MovieContentProvider;
 import com.annamorgiel.popularmovies_udacity_1.data.MovieContract;
 import com.annamorgiel.popularmovies_udacity_1.data.MovieDbHelper;
 
@@ -44,21 +42,50 @@ import static com.annamorgiel.popularmovies_udacity_1.BuildConfig.THE_MOVIE_DB_A
  */
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
     private static final String TAG = "MainActivity";
     private static RestClient mRestClient = new RestClient();
-    private final Context mContext;
+    private Context mContext;
     private static final int FAVORITE_MOVIES_LOADER = 100;
     private Cursor mCursor;
     @BindView(R.id.rv_movies)
-    private RecyclerView poster_rv;
+    public RecyclerView poster_rv;
     private SQLiteDatabase db;
     private MovieAdapter movieAdapter;
     private String sortByPopular = "popular";
     private String sortByHighestRated = "top_rated";
     private List<MovieObject> movieList;
     private List<MovieObject> favouriteMoviesFromDB;
-    //todo: movieListener is never assigned?
     private View.OnClickListener movieListener;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+        mContext = this;
+        mRestClient.getMovieService();
+
+        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            poster_rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+        } else {
+            poster_rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
+        }
+        fetchMovies(sortByPopular);
+
+        // init films list:
+        movieListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(mContext, "Clicked", Toast.LENGTH_SHORT).show();
+            }
+        };
+        movieAdapter = new MovieAdapter(movieListener);
+        poster_rv.setAdapter(movieAdapter);
+        poster_rv.setHasFixedSize(true);
+
+
+    }
 
     public static List<MovieObject> parseMoviesFromCursor(Cursor cursor) {
         List<MovieObject> movieObjects = new ArrayList<>();
@@ -72,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_OVERVIEW));
                 String releaseDate = cursor.getString(
                         cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_RELEASE_DATE));
-                //todo gendre IDs?
                 Integer id = cursor.getInt(
                         cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME_ID));
                 Integer runtime = cursor.getInt(
@@ -108,8 +134,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     void swapCursor(Cursor newCursor) {
         mCursor = newCursor;
-        //todo notifyDataSetChanged error: cannot resolve method
-        notifyDataSetChanged();
+        movieAdapter.notifyDataSetChanged();
     }
 
     public static final String[] DMOVIE_DETAILS_PROJECTION = {
@@ -127,26 +152,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             MovieContract.MovieEntry.COLUMN_NAME_VIDEO,
             MovieContract.MovieEntry.COLUMN_NAME_VOTE_AVERAGE
     };
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        mRestClient.getMovieService();
-
-        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            poster_rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
-        } else {
-            poster_rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
-        }
-        fetchMovies(sortByPopular);
-        movieAdapter = new MovieAdapter(movieListener, movieList);
-        poster_rv.setAdapter(movieAdapter);
-        poster_rv.setHasFixedSize(true);
-
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -177,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 MovieDbHelper dbHelper = new MovieDbHelper(this);
                 db = dbHelper.getWritableDatabase();
                 Cursor cursor = getAllMovies();
-                //todo display fav movies
+                //todo display fav movies doesn't work
                 favouriteMoviesFromDB = parseMoviesFromCursor(cursor);
                 movieAdapter.setMovieList(favouriteMoviesFromDB);
                 movieAdapter.notifyDataSetChanged();
@@ -193,6 +198,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void fetchMovies(String sortby) {
         final Call movieListCall = mRestClient.getMovieService().getMovies(sortby, THE_MOVIE_DB_API_KEY);
+        //todo unchecked call
         movieListCall.enqueue(new Callback<List<MovieObject>>() {
             @Override
             public void onResponse(Call<List<MovieObject>> call, Response<List<MovieObject>> response) {
@@ -215,40 +221,47 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
         Log.d(TAG, "onCreateLoader");
-        switch (loaderId){
+
+        Uri movieQueryUri = MovieContract.MovieEntry.CONTENT_URI;
+        String sortOrder = MovieContract.MovieEntry.COLUMN_NAME_POPULARITY + " ASC";
+//            String selection = MovieContract.MovieEntry.
+
+        return new android.content.CursorLoader(MainActivity.this, movieQueryUri, DMOVIE_DETAILS_PROJECTION, null, null, sortOrder);
+
+
+
+       /* switch (loaderId) {
             Uri movieQueryUri = MovieContract.MovieEntry.CONTENT_URI;
             String sortOrder = MovieContract.MovieEntry.COLUMN_NAME_POPULARITY + " ASC";
-            String selection = MovieContract.MovieEntry.
+//            String selection = MovieContract.MovieEntry.
 //// TODO: 19.05.2017
-            return new CursorLoader(this,
+
+            new CursorLoader(MainActivity.this, movieQueryUri, DMOVIE_DETAILS_PROJECTION, null, null, sortOrder);
+
+            *//*return new CursorLoader(this,
                     movieQueryUri,
                     DMOVIE_DETAILS_PROJECTION,
                     null,
                     null,
-                    sortOrder);
+                    sortOrder);*//*
 
             default:
                 throw new RuntimeException("Loader Not Implemented: " + loaderId);
-        }
-        }
-        return new MovieContentProvider.FavouriteMoviesCursorLoader(this);
+        }*/
+//        return new MovieContentProvider.FavouriteMoviesCursorLoader(this);
     }
+
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.d(TAG, "onLoadFinished");
-        //todo in londonbike app
-        //movieAdapter.changeCursor(data);
-        movieAdapter.swapCursor(data);
-
+        movieAdapter.updateData(data);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.d(TAG, "onLoaderReset");
-        //todo in londonbike app
-        // movieAdapter.changeCursor(null);
-        movieAdapter.swapCursor(null);
+        movieAdapter.updateData(null);
     }
 }
 

@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import static android.R.attr.id;
+import static com.annamorgiel.popularmovies_udacity_1.data.MovieContract.MovieEntry.CONTENT_URI;
 import static com.annamorgiel.popularmovies_udacity_1.data.MovieContract.MovieEntry.TABLE_NAME;
 
 /**
@@ -29,9 +30,9 @@ public class MovieContentProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     public static class FavouriteMoviesCursorLoader extends CursorLoader {
-        //todo wrong second argument, required Uri found MovieContentProvider.MOVIES
+
         public FavouriteMoviesCursorLoader(Context context) {
-            super(context, , null, null, null, null);
+            super(context, CONTENT_URI, null, null, null, null);
         }
     }
 
@@ -66,6 +67,7 @@ public class MovieContentProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+        //todo may produce NullPointerException
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
@@ -95,6 +97,7 @@ public class MovieContentProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+        //todo may produce null pointer exception
         getContext().getContentResolver().notifyChange(uri, null);
 
         return returnUri;
@@ -120,7 +123,6 @@ public class MovieContentProvider extends ContentProvider {
         return deletedMovie;
     }
 
-    @Nullable
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String
             selection, @Nullable String[] selectionArgs) {

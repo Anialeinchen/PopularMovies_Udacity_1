@@ -25,7 +25,6 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieContract.MovieEntry.COLUMN_NAME_ADULT + "INTEGER NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_NAME_OVERVIEW + " TEXT NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_NAME_RELEASE_DATE + "DATE NOT NULL," +
-                //todo: save runtime as integer?
                 MovieContract.MovieEntry.COLUMN_NAME_RUNTIME + " TEXT NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_TITLE + " TEXT NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_NAME_ORIGINAL_LANGUAGE + " TEXT NOT NULL, " +

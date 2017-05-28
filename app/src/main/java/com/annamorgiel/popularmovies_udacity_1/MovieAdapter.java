@@ -2,6 +2,7 @@ package com.annamorgiel.popularmovies_udacity_1;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 
 import com.annamorgiel.popularmovies_udacity_1.Rest.model.MovieObject;
 import com.annamorgiel.popularmovies_udacity_1.ui.DetailActivity;
+import com.annamorgiel.popularmovies_udacity_1.ui.MainActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -26,14 +28,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private int movieCount;
     private List<MovieObject> movieList = new ArrayList<MovieObject>() {
     };
-    private View.OnClickListener mOnClickListener;
+    public View.OnClickListener mOnClickListener;
 
-    public MovieAdapter(View.OnClickListener mOnClickListener, List<MovieObject> mList) {
+    public MovieAdapter(View.OnClickListener mOnClickListener) {
         this.mOnClickListener = mOnClickListener;
         this.movieCount = movieList.size();
-        this.movieList = mList;
     }
-
 
     public void setMovieList(List<MovieObject> movies) {
         this.movieList = movies;
@@ -49,9 +49,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         View view = inflater.inflate(layoutIdForGridItem, parent, false);
         view.setOnClickListener(mOnClickListener);
-        MovieViewHolder holder = new MovieViewHolder(view);
 
-        return holder;
+        return new MovieViewHolder(view);
     }
 
     @Override
@@ -72,6 +71,32 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public int getItemCount() {
         return movieCount;
+    }
+
+    public void updateData(Cursor cursor) {
+        if (cursor != null && cursor.getCount() > 0) {
+            final List<MovieObject> movieList = MainActivity.parseMoviesFromCursor(cursor);
+            setMovieList(movieList);
+        }
+
+
+
+        /*if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            int idIndex =
+                    cursor.getColumnIndex(LentItems._ID);
+            int nameIndex =
+                    cursor.getColumnIndex(LentItems.NAME);
+            int borrowerIndex =
+                    cursor.getColumnIndex(LentItems.BORROWER);
+            this.itemId = cursor.getLong(idIndex);
+            String name = cursor.getString(nameIndex);
+            String borrower = cursor.getString(borrowerIndex);
+            ((EditText)findViewById(R.id.name)).
+                    setText(name);
+            ((EditText)findViewById(R.id.person)).
+                    setText(borrower);
+        }*/
     }
 
 

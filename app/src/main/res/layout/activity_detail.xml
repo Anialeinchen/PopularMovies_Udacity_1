@@ -14,8 +14,9 @@
             android:id="@+id/detail_movie_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/zizle_desc"
             android:background="#80CBC4"
-            android:text="Chappie"
+            android:text="@string/chappie_default"
             android:fontFamily="sans-serif-light"
             android:textAlignment="center"
             android:textColor="#fefaff"
@@ -55,7 +56,8 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
                     android:padding="4dp"
-                    android:text="2015" />
+                    android:contentDescription="@string/release_date_desc"
+                    android:text="@string/year_default" />
 
                 <TextView
                     android:id="@+id/detail_movie_length_tv"
@@ -72,7 +74,8 @@
                     android:fontFamily="sans-serif-light"
                     android:layout_height="wrap_content"
                     android:paddingTop="24dp"
-                    android:text="7.2/10" />
+                    android:contentDescription=""
+                    android:text="@string/vote_ave_default" />
 
                 <Button
                     android:id="@+id/detail_favorites_button"

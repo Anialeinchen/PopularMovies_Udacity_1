@@ -40,7 +40,7 @@ public class MovieObject implements Parcelable {
     private String releaseDate;
     @SerializedName("genre_ids")
     @Expose
-    private List<Integer> genreIds = new ArrayList<Integer>();
+    private List<Integer> genreIds = new ArrayList<>();
     @SerializedName("id")
     @Expose
     private Integer id;
@@ -83,8 +83,7 @@ public class MovieObject implements Parcelable {
         backdropPath = in.readString();
     }
 
-    //todo List<Integer> genreIds, out of constructor, because I didn't know ho to save it in a  database. Separate database?
-    public MovieObject(String posterPath, Boolean adult, String overview,
+     public MovieObject(String posterPath, Boolean adult, String overview,
                        String releaseDate, Integer id,
                        Integer runtime, String originalTitle, String originalLanguage,
                        String title, String backdropPath, Double popularity,
@@ -93,7 +92,6 @@ public class MovieObject implements Parcelable {
         this.adult = adult;
         this.overview = overview;
         this.releaseDate = releaseDate;
-        this.genreIds = genreIds;
         this.id = id;
         this.runtime = runtime;
         this.originalTitle = originalTitle;

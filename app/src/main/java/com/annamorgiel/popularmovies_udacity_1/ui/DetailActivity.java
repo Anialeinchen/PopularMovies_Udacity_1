@@ -106,18 +106,18 @@ public class DetailActivity extends Activity {
         reviews_rv.setHasFixedSize(true);
         fetchReviews(movieId);
         fav.setTag(1);
-        fav.setText("mark movie as favorite");
+        fav.setText(R.string.mark_as_fav);
         fav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final int status = (Integer) v.getTag();
                 if (status == 1) {
                     addMovieToFavourites(movie);
-                    fav.setText("remove movie from favorites");
+                    fav.setText(R.string.remove_from_fav);
                     v.setTag(0);
                 } else {
                     removeMovieFromFavourites(movie.getId());
-                    fav.setText("mark movie as favorite");
+                    fav.setText(R.string.mark_as_fav);
                     v.setTag(1);
                 }
             }
@@ -148,16 +148,13 @@ public class DetailActivity extends Activity {
             Toast.makeText(getBaseContext(), uri.toString(),
                     Toast.LENGTH_LONG).show();
         }
-        //todo ??
-        finish();
-
-        //todo delete?
         //db.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
     }
 
 
     private void fetchMovieDetails(Integer id) {
         final Call movieDetailCall = App.getRestClient().getMovieService().getMovieDetails(id, THE_MOVIE_DB_API_KEY);
+        //todo Warning:(157, 9) Unchecked call to 'enqueue(Callback<T>)' as a member of raw type 'retrofit2.Call'
         movieDetailCall.enqueue(new Callback<MovieObject>() {
             @Override
             public void onResponse(Call<MovieObject> call, Response<MovieObject> response) {
@@ -167,7 +164,10 @@ public class DetailActivity extends Activity {
                 title.setText(movie.getTitle());
                 release_date.setText(movie.getReleaseDate());
                 desc.setText(movie.getOverview());
+                //todo Warning:(166, 32) Do not concatenate text displayed with `setText`. Use resource string with placeholders.
+                //todo Warning:(166, 32) Do not concatenate text displayed with `setText`. Use resource string with placeholders.
                 length.setText(movie.getRuntime().toString() + " min");
+                //todo Warning:(167, 33) Number formatting does not take into account locale settings. Consider using `String.format` instead.
                 ranking.setText(movie.getVoteAverage().toString());
                 Picasso.with(getApplicationContext())
                         .load(BASE_POSTER_URL + movie.getPosterPath())
@@ -186,6 +186,7 @@ public class DetailActivity extends Activity {
 
     private void fetchVideos(Integer id) {
         final Call videoCall = App.getRestClient().getMovieService().getVideos(id, THE_MOVIE_DB_API_KEY);
+        //Warning:(185, 9) Unchecked call to 'enqueue(Callback<T>)' as a member of raw type 'retrofit2.Call'
         videoCall.enqueue(new Callback<List<VideoObject>>() {
             @Override
             public void onResponse(Call<List<VideoObject>> call, Response<List<VideoObject>> response) {
@@ -205,6 +206,7 @@ public class DetailActivity extends Activity {
 
     private void fetchReviews(Integer id) {
         final Call videoCall = App.getRestClient().getMovieService().getReviews(id, THE_MOVIE_DB_API_KEY);
+        //todo Warning:(204, 9) Unchecked call to 'enqueue(Callback<T>)' as a member of raw type 'retrofit2.Call'
         videoCall.enqueue(new Callback<List<ReviewObject>>() {
             @Override
             public void onResponse(Call<List<ReviewObject>> call, Response<List<ReviewObject>> response) {
