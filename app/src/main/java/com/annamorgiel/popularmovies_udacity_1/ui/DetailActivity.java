@@ -148,10 +148,6 @@ public class DetailActivity extends Activity {
             Toast.makeText(getBaseContext(), uri.toString(),
                     Toast.LENGTH_LONG).show();
         }
-        //todo ??
-        finish();
-
-        //todo delete?
         //db.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
     }
 
