@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private List<MovieObject> movieList;
     private View.OnClickListener movieListener;
 
-    private String sortByPopular = "popular";
-    private String sortByHighestRated = "top_rated";
+    private String sortByPopular = getString(R.string.sort_by_popular);
+    private String sortByHighestRated = getString(R.string.sort_by_top_rated);
     //realmComponents 1
     private Realm realmInstance;
     private Context mContext;
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<MovieObject>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Please check your internet connection, buddy!",
+                Toast.makeText(getApplicationContext(), R.string.check_connection,
                         Toast.LENGTH_LONG).show();
             }
         });

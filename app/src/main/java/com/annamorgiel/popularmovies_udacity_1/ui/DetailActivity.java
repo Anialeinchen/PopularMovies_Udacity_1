@@ -116,7 +116,7 @@ public class DetailActivity extends Activity {
         fetchReviews(movieId);
 
         addMovieToFavourites.setTag(1);
-        addMovieToFavourites.setText("mark movie as favorite");
+        addMovieToFavourites.setText(R.string.mark_as_favorite);
         addMovieToFavourites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,12 +133,12 @@ public class DetailActivity extends Activity {
     }
 
     private void movieNotAddedToFavorites() {
-        addMovieToFavourites.setText("mark movie as favorite");
+        addMovieToFavourites.setText(R.string.mark_as_favorite);
         addMovieToFavourites.setTag(TAG_MOVIE_REMOVED_FROM_FAVORITES);
     }
 
     private void movieAddedToFavorites() {
-        addMovieToFavourites.setText("remove movie from favorites");
+        addMovieToFavourites.setText(R.string.remove_from_favorties);
         addMovieToFavourites.setTag(TAG_MOVIE_ADDED_TO_FAV);
     }
 
