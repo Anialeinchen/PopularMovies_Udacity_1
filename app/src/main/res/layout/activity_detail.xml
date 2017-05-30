@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#80CBC4"
-            android:text="Chappie"
+            tools:text="Chappie"
             android:fontFamily="sans-serif-light"
             android:textAlignment="center"
             android:textColor="#fefaff"

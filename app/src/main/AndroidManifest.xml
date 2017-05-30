@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:name=".app.App"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.MainActivity" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,7 +21,9 @@
         <activity android:name=".ui.DetailActivity"
             android:label="@string/detail_activity"
             android:parentActivityName=".ui.MainActivity"/>
-
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.annamorgiel.popularmovies_udacity_1.ui.MainActivity" />
     </application>
 
 </manifest>

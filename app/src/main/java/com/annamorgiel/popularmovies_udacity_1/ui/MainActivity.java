@@ -3,6 +3,7 @@ package com.annamorgiel.popularmovies_udacity_1.ui;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,14 +43,16 @@ import static com.annamorgiel.popularmovies_udacity_1.BuildConfig.THE_MOVIE_DB_A
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private static final String ON_SAVED_INSTANCE_KEY= "movies";
     public static RestClient mRestClient = new RestClient();
+    public static final String MOVIES = "movies";
 
     private MovieAdapter movieAdapter;
     private List<MovieObject> movieList;
     private View.OnClickListener movieListener;
 
-    private String sortByPopular = getString(R.string.sort_by_popular);
-    private String sortByHighestRated = getString(R.string.sort_by_top_rated);
+    private String sortByPopular = "popular";
+    private String sortByHighestRated = "top_rated";
     //realmComponents 1
     private Realm realmInstance;
     private Context mContext;
@@ -60,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            movieList = savedInstanceState.getParcelableArrayList(MOVIES);
+        }
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         //realmComponents 2
@@ -139,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
         return list;
     }
 
+
     private void fetchMovies(String sortby) {
         final Call movieListCall = mRestClient.getMovieService().getMovies(sortby, THE_MOVIE_DB_API_KEY);
         movieListCall.enqueue(new Callback<List<MovieObject>>() {
@@ -159,4 +166,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(MOVIES, (ArrayList<? extends Parcelable>) movieList);
+    }
+
 }

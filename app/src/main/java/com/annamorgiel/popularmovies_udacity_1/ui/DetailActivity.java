@@ -1,8 +1,8 @@
 package com.annamorgiel.popularmovies_udacity_1.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -43,7 +43,7 @@ import static com.annamorgiel.popularmovies_udacity_1.BuildConfig.THE_MOVIE_DB_A
  * Clicking on the trailer field opens YouTube or a web browser with the trailer content.
  */
 
-public class DetailActivity extends Activity {
+public class DetailActivity extends AppCompatActivity {
 
     public static final int TAG_MOVIE_ADDED_TO_FAV = 0;
     public static final int TAG_MOVIE_REMOVED_FROM_FAVORITES = 1;
@@ -186,7 +186,7 @@ public class DetailActivity extends Activity {
      * or error icon if there is no internet connection
      */
     private void fetchMovieDetails(Integer id) {
-        final Call movieDetailCall = App.getRestClient().getMovieService().getMovieDetails(id, THE_MOVIE_DB_API_KEY);
+        final Call<MovieObject> movieDetailCall = App.getRestClient().getMovieService().getMovieDetails(id, THE_MOVIE_DB_API_KEY);
         movieDetailCall.enqueue(new Callback<MovieObject>() {
             @Override
             public void onResponse(Call<MovieObject> call, Response<MovieObject> response) {

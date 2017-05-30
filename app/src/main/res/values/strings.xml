@@ -10,8 +10,6 @@
     <string name="sort_by_favourites">sort by favourites</string>
     <string name="mark_as_nfavorite">mark as  favorite</string>
     <string name="check_connection">Please check your internet connection, buddy!</string>
-    <string name="sort_by_popular">popular</string>
-    <string name="sort_by_top_rated">top_rated</string>
     <string name="mark_as_favorite">mark movie as favorite</string>
     <string name="remove_from_favorties">remove movie from favorites</string>
 </resources>
